@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.allenz</groupId>
 	<artifactId>zlog</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>aar</packaging>
+	<version>0.1.0-RELEASE</version>
+	<packaging>jar</packaging>
 	<name>zlog</name>
 
 	<properties>
