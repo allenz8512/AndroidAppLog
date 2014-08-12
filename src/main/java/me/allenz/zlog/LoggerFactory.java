@@ -215,19 +215,45 @@ public class LoggerFactory {
 		}
 	}
 
+	/**
+	 * 
+	 * Parse the logger tag in property value, if the tag is empty we consider
+	 * there's no tag for the logger and the logger will use it's class name as
+	 * the tag.
+	 * <p>
+	 * 
+	 * There's no obviously limit for the length of android log tag. The size of
+	 * 'tag + message' should not be greater than 4073 bytes, and the exceed
+	 * bytes won't be written to internal log buffer.
+	 * <p>
+	 * 
+	 * In {@link android.util.Log#isLoggable(String tag, int level)}, the size
+	 * of argument 'tag' should be no greater than 23 bytes or we will receive
+	 * an exception, simplely not to call this method to avoid it.
+	 * <p>
+	 * 
+	 * Reference:
+	 * 
+	 * <pre>
+	 * http://developer.android.com/reference/android/util/Log.html
+	 * http://www.slf4j.org/android/
+	 * http://stackoverflow.com/questions/4126815/android-logging-levels
+	 * https://github.com/android/platform_frameworks_base/blob/master/core/jni/android_util_Log.cpp
+	 * https://github.com/android/platform_bionic/blob/master/libc/include/sys/system_properties.h
+	 * https://android.googlesource.com/kernel/common.git/+/android-3.4/drivers/staging/android/logger.h
+	 * https://android.googlesource.com/kernel/common.git/+/android-3.4/drivers/staging/android/logger.c
+	 * </pre>
+	 * 
+	 * @param name
+	 *            the name of the logger
+	 * @param tag
+	 *            the tag of the logger
+	 * @return If the length of the tag is zero return {@code null}, otherwise
+	 *         return the tag.
+	 */
 	private static String parseTag(final String name, final String tag) {
-		final int length = tag.length();
-		if (length == 0) {
-			return null;
-		} else if (length <= 23) {
-			return tag;
-		} else {
-			final String legalTag = tag.substring(0, 23);
-			internalLogger.verbose(
-					"logger %s tag '%s' is too long, cut to '%s'", name, tag,
-					legalTag);
-			return legalTag;
-		}
+		// There's no obviously length limit for log tag, if you don't use
+		return tag.length() == 0 ? null : tag;
 	}
 
 	/**
