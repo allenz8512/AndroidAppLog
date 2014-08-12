@@ -29,29 +29,6 @@ public class Utils {
 	}
 
 	/**
-	 * Get the length of the string by byte.
-	 * 
-	 * @param str
-	 *            String
-	 * @return the length of the string
-	 */
-	public static int getLength(final String str) {
-		if (isEmpty(str)) {
-			return 0;
-		}
-		int length = 0;
-		for (int i = 0; i < str.length(); i++) {
-			final int ascii = Character.codePointAt(str, i);
-			if (ascii >= 0 && ascii <= 255) {
-				length++;
-			} else {
-				length += 2;
-			}
-		}
-		return length;
-	}
-
-	/**
 	 * Get the integer value of static field the declared in specified class.
 	 * 
 	 * @param className
