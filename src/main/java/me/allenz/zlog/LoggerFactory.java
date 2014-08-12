@@ -247,6 +247,7 @@ public class LoggerFactory {
 	 */
 	public static void destroy() {
 		appContext = null;
+		loggerConfigs.clear();
 	}
 
 	/**
@@ -257,6 +258,7 @@ public class LoggerFactory {
 	public static Logger getLogger() {
 		synchronized (LoggerFactory.class) {
 			checkInitialization();
+
 		}
 		return null;
 	}
