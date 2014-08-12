@@ -49,7 +49,7 @@ public class SimpleLogger implements Logger {
 						format, args) : format;
 			}
 			if (t != null) {
-				message = message != null ? message
+				message = message != null ? message + "\n"
 						+ Log.getStackTraceString(t) : Log
 						.getStackTraceString(t);
 			}
