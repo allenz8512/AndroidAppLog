@@ -76,7 +76,7 @@ public class Utils {
 				return field.getInt(null);
 			}
 		} catch (final Exception e) {
-			LoggerFactory.getInternalLogger().warn(e,
+			LoggerFactory.getInternalLogger().verbose(e,
 					"Can not get the value of %s.%s", className, fieldName);
 		}
 		return defaultValue;
@@ -108,7 +108,7 @@ public class Utils {
 				return field.getBoolean(null);
 			}
 		} catch (final Exception e) {
-			LoggerFactory.getInternalLogger().warn(e,
+			LoggerFactory.getInternalLogger().verbose(e,
 					"Can not get the value of %s.%s", className, fieldName);
 		}
 		return defaultValue;
