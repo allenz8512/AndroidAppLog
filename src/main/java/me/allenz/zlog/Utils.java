@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
  * Utility tools.
  * 
  * @author Allenz
- * @since 0.10.-RELEASE
+ * @since 0.1.0-RELEASE
  */
 public class Utils {
 
@@ -27,8 +27,9 @@ public class Utils {
 	 *            field
 	 * @return the value of the field when successed, or the default value when
 	 *         failure
+	 * @since 0.1.0-RELEASE
 	 */
-	public int intReflectStaticFieldValue(final String className,
+	public static int intReflectStaticFieldValue(final String className,
 			final String fieldName, final int defaultValue) {
 		try {
 			final Class<?> clazz = Class.forName(className);
@@ -57,9 +58,11 @@ public class Utils {
 	 *            field
 	 * @return the value of the field when successed, or the default value when
 	 *         failure
+	 * @since 0.1.0-RELEASE
 	 */
-	public boolean booleanReflectStaticFieldValue(final String className,
-			final String fieldName, final boolean defaultValue) {
+	public static boolean booleanReflectStaticFieldValue(
+			final String className, final String fieldName,
+			final boolean defaultValue) {
 		try {
 			final Class<?> clazz = Class.forName(className);
 			final Field field = clazz.getDeclaredField(fieldName);
