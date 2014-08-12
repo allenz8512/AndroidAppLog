@@ -16,6 +16,42 @@ public class Utils {
 	}
 
 	/**
+	 * Consider if the string is empty.
+	 * 
+	 * @param str
+	 *            String
+	 * @return if the string is {@code null} or length equals 0 return
+	 *         true,otherwise return false;
+	 * @since 0.1.0-RELEASE
+	 */
+	public static boolean isEmpty(final String str) {
+		return str == null || str.length() == 0;
+	}
+
+	/**
+	 * Get the length of the string by byte.
+	 * 
+	 * @param str
+	 *            String
+	 * @return the length of the string
+	 */
+	public static int getLength(final String str) {
+		if (isEmpty(str)) {
+			return 0;
+		}
+		int length = 0;
+		for (int i = 0; i < str.length(); i++) {
+			final int ascii = Character.codePointAt(str, i);
+			if (ascii >= 0 && ascii <= 255) {
+				length++;
+			} else {
+				length += 2;
+			}
+		}
+		return length;
+	}
+
+	/**
 	 * Get the integer value of static field the declared in specified class.
 	 * 
 	 * @param className
