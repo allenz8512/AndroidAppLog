@@ -12,8 +12,8 @@ import android.util.Log;
  */
 public class SimpleLogger implements Logger {
 
-	LogLevel level;
-	String tag;
+	protected LogLevel level;
+	protected String tag;
 
 	/**
 	 * Create a new SimpleLogger instance.
