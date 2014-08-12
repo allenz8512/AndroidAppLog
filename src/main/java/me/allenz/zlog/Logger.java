@@ -5,6 +5,7 @@ package me.allenz.zlog;
  * 
  * @author Allenz
  * @since 0.1.0-RELEASE
+ * @see android.util.Log
  */
 public interface Logger {
 
@@ -17,6 +18,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#v(String, String)
 	 */
 	void verbose(String format, Object... args);
 
@@ -26,6 +28,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#v(String, String, Throwable)
 	 */
 	void verbose(Throwable t);
 
@@ -40,6 +43,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#v(String, String, Throwable)
 	 */
 	void verbose(Throwable t, String format, Object... args);
 
@@ -52,6 +56,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#d(String, String)
 	 */
 	void debug(String format, Object... args);
 
@@ -61,6 +66,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#d(String, String, Throwable)
 	 */
 	void debug(Throwable t);
 
@@ -75,6 +81,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#d(String, String, Throwable)
 	 */
 	void debug(Throwable t, String format, Object... args);
 
@@ -87,6 +94,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#i(String, String)
 	 */
 	void info(String format, Object... args);
 
@@ -96,6 +104,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#i(String, String, Throwable)
 	 */
 	void info(Throwable t);
 
@@ -110,6 +119,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#i(String, String, Throwable)
 	 */
 	void info(Throwable t, String format, Object... args);
 
@@ -122,6 +132,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#w(String, String)
 	 */
 	void warn(String format, Object... args);
 
@@ -131,6 +142,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#w(String, Throwable)
 	 */
 	void warn(Throwable t);
 
@@ -145,6 +157,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#w(String, String, Throwable)
 	 */
 	void warn(Throwable t, String format, Object... args);
 
@@ -157,6 +170,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#e(String, String)
 	 */
 	void error(String format, Object... args);
 
@@ -166,6 +180,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#e(String, String, Throwable)
 	 */
 	void error(Throwable t);
 
@@ -180,6 +195,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#e(String, String, Throwable)
 	 */
 	void error(Throwable t, String format, Object... args);
 
@@ -192,6 +208,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#wtf(String, String)
 	 */
 	void wtf(String format, Object... args);
 
@@ -201,6 +218,7 @@ public interface Logger {
 	 * @param t
 	 *            the exception (throwable) to log
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#wtf(String, Throwable)
 	 */
 	void wtf(Throwable t);
 
@@ -215,6 +233,7 @@ public interface Logger {
 	 * @param args
 	 *            a list of args
 	 * @since 0.1.0-RELEASE
+	 * @see android.util.Log#wtf(String, String, Throwable)
 	 */
 	void wtf(Throwable t, String format, Object... args);
 }
