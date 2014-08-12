@@ -40,8 +40,8 @@ public class SimpleLogger implements Logger {
 	 * @param args
 	 *            an array of arguments, can be {@code null}
 	 */
-	void println(final LogLevel level, final Throwable t, final String format,
-			final Object... args) {
+	protected void println(final LogLevel level, final Throwable t,
+			final String format, final Object... args) {
 		if (this.level.includes(level) && (t != null || format != null)) {
 			String message = null;
 			if (format != null && format.length() > 0) {
