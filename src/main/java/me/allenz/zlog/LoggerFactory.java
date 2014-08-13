@@ -258,10 +258,7 @@ public class LoggerFactory {
 	 *         return the tag.
 	 */
 	private static String parseTag(final String name, final String tag) {
-		if (tag == null) {
-			return null;
-		}
-		return tag.length() == 0 ? null : tag;
+		return Utils.isEmpty(tag) ? null : tag;
 	}
 
 	/**
