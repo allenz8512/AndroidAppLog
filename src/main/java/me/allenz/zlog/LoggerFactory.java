@@ -18,6 +18,9 @@ import android.content.Context;
  */
 public class LoggerFactory {
 
+	private static final String LOGGER_FACTORY_CLASS_NAME = LoggerFactory.class
+			.getName();
+
 	private static final String CONFIG_FILE_NAME = "zlog";
 	private static final String ROOT_PREFIX = "root";
 	private static final String LOGGER_PREFIX = "logger.";
@@ -32,8 +35,10 @@ public class LoggerFactory {
 	private static boolean initNormally = false;
 	private static LoggerConfig rootLoggerConfig = new LoggerConfig(
 			ROOT_PREFIX, DEFAULT_ROOT_TAG, DEFAULT_ROOT_LOG_LEVEL);
-	private static Map<String, LoggerConfig> loggerConfigs = new HashMap<String, LoggerConfig>();
+	private static Map<String, LoggerConfig> loggerConfigs;
 	private static Context appContext;
+	private static CallerResolver callerResolver = new CallerResolver();
+	private static HashMap<String, Logger> loggers = new HashMap<String, Logger>();
 
 	/**
 	 * Get the logger for zlog itself.
@@ -73,6 +78,7 @@ public class LoggerFactory {
 			// try to load config
 			final InputStream is = locateProperties();
 			if (is != null) {
+				loggerConfigs = new HashMap<String, LoggerFactory.LoggerConfig>();
 				try {
 					loadProperties(is);
 					initNormally = true;
@@ -252,7 +258,9 @@ public class LoggerFactory {
 	 *         return the tag.
 	 */
 	private static String parseTag(final String name, final String tag) {
-		// There's no obviously length limit for log tag, if you don't use
+		if (tag == null) {
+			return null;
+		}
 		return tag.length() == 0 ? null : tag;
 	}
 
@@ -273,7 +281,12 @@ public class LoggerFactory {
 	 */
 	public static void destroy() {
 		appContext = null;
-		loggerConfigs.clear();
+		if (loggerConfigs != null) {
+			loggerConfigs.clear();
+			loggerConfigs = null;
+		}
+		loggers.clear();
+		loggers = null;
 	}
 
 	/**
@@ -284,7 +297,80 @@ public class LoggerFactory {
 	public static Logger getLogger() {
 		synchronized (LoggerFactory.class) {
 			checkInitialization();
+			Logger logger = null;
+			final String caller = getCallerClassName();
+			internalLogger.verbose("Caller: %s", caller);
+			logger = getDeclaredLogger(caller);
+			return logger != null ? logger : getNewLogger(caller);
+		}
+	}
 
+	private static Logger getDeclaredLogger(final String caller) {
+		return loggers.get(caller);
+	}
+
+	private static Logger getNewLogger(final String caller) {
+		Logger logger = null;
+		if (loggerConfigs.containsKey(caller)) {
+			logger = createSimpleLogger(caller, loggerConfigs.get(caller));
+		} else {
+			logger = createInheritParentConfigLogger(caller);
+		}
+		loggers.put(caller, logger);
+		return logger;
+	}
+
+	private static Logger createInheritParentConfigLogger(final String caller) {
+		boolean parentFound = false;
+		Logger logger = null;
+		for (int i = caller.lastIndexOf('.'); i >= 0; i = caller.lastIndexOf(
+				'.', i - 1)) {
+			final String parentPackage = caller.substring(0, i);
+			if (loggerConfigs.containsKey(parentPackage)) {
+				logger = createSimpleLogger(caller,
+						loggerConfigs.get(parentPackage));
+				parentFound = true;
+				break;
+			}
+		}
+		if (!parentFound) {
+			logger = createSimpleLogger(caller, rootLoggerConfig);
+		}
+		return logger;
+	}
+
+	private static Logger createSimpleLogger(final String caller,
+			final LoggerConfig loggerConfig) {
+		final LogLevel level = loggerConfig.level;
+		final String tag = loggerConfig.tag == null ? caller : loggerConfig.tag;
+		internalLogger.verbose("logger created: [name=%s, level=%s tag=%s]",
+				caller, level, tag);
+		return new SimpleLogger(level, tag);
+	}
+
+	private static String getCallerClassName() {
+		final Class<?> caller = callerResolver.getCaller();
+		if (caller == null) {
+			final StackTraceElement callerStackTrace = getCallerStackTrace();
+			return callerStackTrace == null ? null : callerStackTrace
+					.getClassName();
+		} else {
+			return caller.getName();
+		}
+	}
+
+	private static StackTraceElement getCallerStackTrace() {
+		final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+		if (stackTrace == null || stackTrace.length <= 0) {
+			return null;
+		}
+
+		for (int i = 0; i < stackTrace.length; i++) {
+			final StackTraceElement stackTraceElement = stackTrace[i];
+			if (stackTraceElement.getClassName().equals(
+					LOGGER_FACTORY_CLASS_NAME)) {
+				return stackTrace[i + 3];
+			}
 		}
 		return null;
 	}
@@ -332,5 +418,23 @@ public class LoggerFactory {
 			this.level = level;
 		}
 
+	}
+
+	private static final class CallerResolver extends SecurityManager {
+
+		@SuppressWarnings("rawtypes")
+		public Class<?> getCaller() {
+			final Class[] classContext = getClassContext();
+			if (classContext == null || classContext.length <= 0) {
+				return null;
+			}
+			for (int i = 0; i < classContext.length; i++) {
+				final Class clazz = classContext[i];
+				if (clazz.getName().equals(LOGGER_FACTORY_CLASS_NAME)) {
+					return classContext[i + 2];
+				}
+			}
+			return null;
+		}
 	}
 }
