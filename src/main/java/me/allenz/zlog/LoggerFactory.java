@@ -339,7 +339,10 @@ public class LoggerFactory {
 	private static Logger createSimpleLogger(final String caller,
 			final LoggerConfig loggerConfig) {
 		final LogLevel level = loggerConfig.level;
-		final String tag = loggerConfig.tag == null ? caller : loggerConfig.tag;
+		final int dot = caller.lastIndexOf(".");
+		final String className = dot == -1 ? caller : caller.substring(dot + 1);
+		final String tag = loggerConfig.tag == null ? className
+				: loggerConfig.tag;
 		internalLogger.verbose("logger created: [name=%s, level=%s tag=%s]",
 				caller, level, tag);
 		return new SimpleLogger(level, tag);
