@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  */
 class PropertyConfigurator {
 
+	private static final String DEBUG_PREFIX = "debug";
 	private static final String ROOT_PREFIX = "root";
 	private static final String LOGGER_PREFIX = "logger.";
 	private static final Pattern PACKAGE_NAME_PATTERN = Pattern
@@ -29,9 +30,22 @@ class PropertyConfigurator {
 
 	public void doConfigure(final ConfigureRepository repository) {
 		repository.resetToDefault();
+		loadDebugConfig();// check if need to close internal logging first
+							// before parsing other properties
 		loadRootLoggerConfig(repository);
 		loadLoggerConfigs(repository);
 	};
+
+	private void loadDebugConfig() {
+		final String value = (String) properties.get(DEBUG_PREFIX);
+		if (value == null) {
+			return;
+		}
+		final Boolean debug = Utils.parseBoolean(value);
+		if (!debug) {
+			ConfigureRepository.setInternalLogLevel(LogLevel.OFF);
+		}
+	}
 
 	private void loadRootLoggerConfig(final ConfigureRepository repository) {
 		final String value = (String) properties.get(ROOT_PREFIX);
@@ -50,9 +64,14 @@ class PropertyConfigurator {
 	}
 
 	private void loadLoggerConfigs(final ConfigureRepository repository) {
+		final int loggerPrefixLength = LOGGER_PREFIX.length();
 		for (final Enumeration<?> names = properties.propertyNames(); names
 				.hasMoreElements();) {
 			final String propertyName = (String) names.nextElement();
+			if (Utils.isEmpty(propertyName)
+					|| propertyName.length() <= loggerPrefixLength) {
+				continue;
+			}
 			if (propertyName.startsWith(LOGGER_PREFIX)) {
 				final String name = propertyName.substring(
 						LOGGER_PREFIX.length(), propertyName.length());
