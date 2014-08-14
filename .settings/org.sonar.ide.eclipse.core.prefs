@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
-extraProperties=sonar.jdbc.password\=qazxcdews\r\nsonar.jdbc.username\=root\r\nsonar.jdbc.url\=jdbc\:mysql\://localhost\:3306/sonar?useUnicode\r\nsonar.jdbc.driverClassName\=com.mysql.jdbc.Driver
-lastAnalysisDate=1407987464924
+extraProperties=sonar.jdbc.username\=root\r\nsonar.jdbc.url\=jdbc\:mysql\://localhost\:3306/sonar?useUnicode\=true&characterEncoding\=utf8\r\nsonar.jdbc.driverClassName\=com.mysql.jdbc.Driver\r\nsonar.jdbc.password\=qazxcdews
+lastAnalysisDate=1408026228066
 projectKey=me.allenz\:zlog
 serverUrl=http\://localhost\:9000
 version=2

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.allenz</groupId>
 	<artifactId>zlog</artifactId>
-	<version>0.1.0-RELEASE</version>
+	<version>0.2.0-RELEASE</version>
 	<packaging>jar</packaging>
 	<name>zlog</name>
 
