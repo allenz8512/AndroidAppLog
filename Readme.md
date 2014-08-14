@@ -1,13 +1,37 @@
-zlog
-====
 A lightweighted logger for android app
---------------------------------------
-Example:
+======================================
+####Usage:
+Put zlog.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
-zlog.properties in assets folder
+	debug=[Show zlog debug log:True|False]
+	root=[Log level],[Log tag],[Show thread name in tag:True|False]
+	logger.[Package or class fullname]=[Log level],[Log tag],[Show thread name in tag:True|False]
 
+Value of 'Log level' can be one of following:
+
+	VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, OFF
+
+Initialize zlog in your Application class:
+
+	LoggerFactory.init(getApplicationContext());
+
+Now use loggers just like using slf4j!
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger();
+	
+	LOGGER.debug("Message");
+	LOGGER.info("Message with arguments: %s %s", "arg1", "arg2");
+	LOGGER.warn(new Throwable());
+	LOGGER.error(new Throwable(), "Throwable with a message");
+
+####Example:
+
+
+zlog.properties
+
+	debug=false  
 	root=debug  
-	logger.com.example.app.MainActivity=info,Activity
+	logger.com.example.app.MainActivity=info,Activity,true
 	logger.com.example.app=warn
 
 App.java
@@ -96,8 +120,8 @@ MainActivity.java
 
 Log output:
 
->08-13 14:25:55.489: I/Activity(1245): info  
->08-13 14:25:55.489: W/Activity(1245): warn  
+>08-13 14:25:55.489: I/[main]Activity(1245): info  
+>08-13 14:25:55.489: W/[main]Activity(1245): warn  
 >08-13 14:25:55.489: W/A(1245): warn  
 >08-13 14:25:55.489: D/B(1245): debug  
 >08-13 14:25:55.489: I/B(1245): info  
