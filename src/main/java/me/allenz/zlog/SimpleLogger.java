@@ -10,7 +10,7 @@ import android.util.Log;
  * @see me.allenz.zlog.Logger
  * @see android.util.Log
  */
-public class SimpleLogger extends LoggerConfig implements Logger {
+class SimpleLogger extends LoggerConfig implements Logger {
 
 	/**
 	 * Create a new SimpleLogger instance.
@@ -23,6 +23,7 @@ public class SimpleLogger extends LoggerConfig implements Logger {
 	 *            the tag of the logger
 	 * @param thread
 	 *            if true, shows thread name as a prefix of the tag
+	 * @since 0.2.0-RELEASE
 	 */
 	public SimpleLogger(final String name, final String tag,
 			final LogLevel level, final boolean thread) {
@@ -40,6 +41,7 @@ public class SimpleLogger extends LoggerConfig implements Logger {
 	 *            a format string of the log message, can be {@code null}.
 	 * @param args
 	 *            an array of arguments, can be {@code null}
+	 * @since 0.1.0-RELEASE
 	 */
 	protected void println(final LogLevel level, final Throwable t,
 			final String format, final Object... args) {

@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
  * @author Allenz
  * @since 0.1.0-RELEASE
  */
-public class Utils {
+class Utils {
 
 	private Utils() {
 		throw new UnsupportedOperationException();
@@ -44,6 +44,28 @@ public class Utils {
 		}
 		final int dot = classFullName.lastIndexOf(".");
 		return dot == -1 ? classFullName : classFullName.substring(dot + 1);
+	}
+
+	/**
+	 * A method like {@link Boolean#parseBoolean(String)}, but return
+	 * {@code null} when the string can not be parsed boolean.
+	 * 
+	 * @param str
+	 *            String
+	 * @return Boolean value or {@code null}
+	 * @since 0.2.0-RELEASE
+	 */
+	public static Boolean parseBoolean(final String str) {
+		if (isEmpty(str)) {
+			return null;
+		}
+		if ("true".equalsIgnoreCase(str)) {
+			return Boolean.TRUE;
+		} else if ("false".equalsIgnoreCase(str)) {
+			return Boolean.FALSE;
+		} else {
+			return null;
+		}
 	}
 
 	/**

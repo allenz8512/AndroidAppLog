@@ -6,7 +6,7 @@ package me.allenz.zlog;
  * @author Allenz
  * @since 0.2.0-RELEASE
  */
-public class LoggerConfig {
+class LoggerConfig {
 
 	protected String name;
 	protected String tag;
