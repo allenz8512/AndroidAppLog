@@ -52,6 +52,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#v(String, String)
 	 */
 	void verbose(String message);
 
@@ -62,6 +64,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#v(String, String, Throwable)
 	 */
 	void verbose(Throwable t, String message);
 
@@ -108,6 +112,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#d(String, String)
 	 */
 	void debug(String message);
 
@@ -118,6 +124,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#d(String, String, Throwable)
 	 */
 	void debug(Throwable t, String message);
 
@@ -164,6 +172,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#i(String, String)
 	 */
 	void info(String message);
 
@@ -174,6 +184,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#i(String, String, Throwable)
 	 */
 	void info(Throwable t, String message);
 
@@ -220,6 +232,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#w(String, String)
 	 */
 	void warn(String message);
 
@@ -230,6 +244,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#w(String, String, Throwable)
 	 */
 	void warn(Throwable t, String message);
 
@@ -276,6 +292,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#e(String, String)
 	 */
 	void error(String message);
 
@@ -286,6 +304,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#e(String, String, Throwable)
 	 */
 	void error(Throwable t, String message);
 
@@ -332,6 +352,8 @@ public interface Logger {
 	 * 
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#wtf(String, String)
 	 */
 	void wtf(String message);
 
@@ -342,6 +364,8 @@ public interface Logger {
 	 *            the exception (throwable) to log
 	 * @param message
 	 *            the message
+	 * @since 0.2.0-RELEASE
+	 * @see android.util.Log#wtf(String, String, Throwable)
 	 */
 	void wtf(Throwable t, String message);
 }
