@@ -57,8 +57,10 @@ class SimpleLogger extends LoggerConfig implements Logger {
 						.getStackTraceString(t);
 			}
 			if (thread) {
-				Log.println(level.intValue(), "["
-						+ Thread.currentThread().getName() + "]", message);
+				final StringBuilder sb = new StringBuilder();
+				sb.append("[").append(Thread.currentThread().getName())
+						.append("]").append(tag);
+				Log.println(level.intValue(), sb.toString(), message);
 			} else {
 				Log.println(level.intValue(), tag, message);
 			}
