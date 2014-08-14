@@ -48,6 +48,24 @@ public interface Logger {
 	void verbose(Throwable t, String format, Object... args);
 
 	/**
+	 * Log a message at the VERBOSE level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void verbose(String message);
+
+	/**
+	 * Log an exception (throwable) at the VERBOSE level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void verbose(Throwable t, String message);
+
+	/**
 	 * Log a message at the DEBUG level according to the specified format and
 	 * args.
 	 * 
@@ -84,6 +102,24 @@ public interface Logger {
 	 * @see android.util.Log#d(String, String, Throwable)
 	 */
 	void debug(Throwable t, String format, Object... args);
+
+	/**
+	 * Log a message at the DEBUG level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void debug(String message);
+
+	/**
+	 * Log an exception (throwable) at the DEBUG level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void debug(Throwable t, String message);
 
 	/**
 	 * Log a message at the INFO level according to the specified format and
@@ -124,6 +160,24 @@ public interface Logger {
 	void info(Throwable t, String format, Object... args);
 
 	/**
+	 * Log a message at the INFO level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void info(String message);
+
+	/**
+	 * Log an exception (throwable) at the INFO level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void info(Throwable t, String message);
+
+	/**
 	 * Log a message at the WARN level according to the specified format and
 	 * args.
 	 * 
@@ -160,6 +214,24 @@ public interface Logger {
 	 * @see android.util.Log#w(String, String, Throwable)
 	 */
 	void warn(Throwable t, String format, Object... args);
+
+	/**
+	 * Log a message at the WARN level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void warn(String message);
+
+	/**
+	 * Log an exception (throwable) at the WARN level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void warn(Throwable t, String message);
 
 	/**
 	 * Log a message at the ERROR level according to the specified format and
@@ -200,6 +272,24 @@ public interface Logger {
 	void error(Throwable t, String format, Object... args);
 
 	/**
+	 * Log a message at the ERROR level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void error(String message);
+
+	/**
+	 * Log an exception (throwable) at the ERROR level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void error(Throwable t, String message);
+
+	/**
 	 * Log a message at the ASSERT level according to the specified format and
 	 * args.
 	 * 
@@ -236,4 +326,22 @@ public interface Logger {
 	 * @see android.util.Log#wtf(String, String, Throwable)
 	 */
 	void wtf(Throwable t, String format, Object... args);
+
+	/**
+	 * Log a message at the ASSERT level.
+	 * 
+	 * @param message
+	 *            the message
+	 */
+	void wtf(String message);
+
+	/**
+	 * Log an exception (throwable) at the ASSERT level with a message.
+	 * 
+	 * @param t
+	 *            the exception (throwable) to log
+	 * @param message
+	 *            the message
+	 */
+	void wtf(Throwable t, String message);
 }
