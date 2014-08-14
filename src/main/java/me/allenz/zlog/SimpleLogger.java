@@ -10,22 +10,23 @@ import android.util.Log;
  * @see me.allenz.zlog.Logger
  * @see android.util.Log
  */
-public class SimpleLogger implements Logger {
-
-	protected LogLevel level;
-	protected String tag;
+public class SimpleLogger extends LoggerConfig implements Logger {
 
 	/**
 	 * Create a new SimpleLogger instance.
 	 * 
+	 * @param name
+	 *            class fullname of logger user
 	 * @param level
 	 *            the LogLevel of the logger
 	 * @param tag
 	 *            the tag of the logger
+	 * @param thread
+	 *            if true, shows thread name as a prefix of the tag
 	 */
-	public SimpleLogger(final LogLevel level, final String tag) {
-		this.level = level;
-		this.tag = tag;
+	public SimpleLogger(final String name, final String tag,
+			final LogLevel level, final boolean thread) {
+		super(name, tag, level, thread);
 	}
 
 	/**
@@ -53,7 +54,12 @@ public class SimpleLogger implements Logger {
 						+ Log.getStackTraceString(t) : Log
 						.getStackTraceString(t);
 			}
-			Log.println(level.intValue(), tag, message);
+			if (thread) {
+				Log.println(level.intValue(), "["
+						+ Thread.currentThread().getName() + "]", message);
+			} else {
+				Log.println(level.intValue(), tag, message);
+			}
 		}
 	}
 
@@ -74,6 +80,16 @@ public class SimpleLogger implements Logger {
 	}
 
 	@Override
+	public void verbose(final String message) {
+		println(LogLevel.VERBOSE, null, message);
+	}
+
+	@Override
+	public void verbose(final Throwable t, final String message) {
+		println(LogLevel.VERBOSE, t, message);
+	}
+
+	@Override
 	public void debug(final String format, final Object... args) {
 		println(LogLevel.DEBUG, null, format, args);
 	}
@@ -87,6 +103,16 @@ public class SimpleLogger implements Logger {
 	public void debug(final Throwable t, final String format,
 			final Object... args) {
 		println(LogLevel.DEBUG, t, format, args);
+	}
+
+	@Override
+	public void debug(final String message) {
+		println(LogLevel.DEBUG, null, message);
+	}
+
+	@Override
+	public void debug(final Throwable t, final String message) {
+		println(LogLevel.DEBUG, t, message);
 	}
 
 	@Override
@@ -106,6 +132,16 @@ public class SimpleLogger implements Logger {
 	}
 
 	@Override
+	public void info(final String message) {
+		println(LogLevel.INFO, null, message);
+	}
+
+	@Override
+	public void info(final Throwable t, final String message) {
+		println(LogLevel.INFO, t, message);
+	}
+
+	@Override
 	public void warn(final String format, final Object... args) {
 		println(LogLevel.WARN, null, format, args);
 	}
@@ -119,6 +155,16 @@ public class SimpleLogger implements Logger {
 	public void warn(final Throwable t, final String format,
 			final Object... args) {
 		println(LogLevel.WARN, t, format, args);
+	}
+
+	@Override
+	public void warn(final String message) {
+		println(LogLevel.WARN, null, message);
+	}
+
+	@Override
+	public void warn(final Throwable t, final String message) {
+		println(LogLevel.WARN, t, message);
 	}
 
 	@Override
@@ -138,6 +184,16 @@ public class SimpleLogger implements Logger {
 	}
 
 	@Override
+	public void error(final String message) {
+		println(LogLevel.ERROR, null, message);
+	}
+
+	@Override
+	public void error(final Throwable t, final String message) {
+		println(LogLevel.ERROR, t, message);
+	}
+
+	@Override
 	public void wtf(final String format, final Object... args) {
 		println(LogLevel.ASSERT, null, format, args);
 	}
@@ -151,6 +207,16 @@ public class SimpleLogger implements Logger {
 	public void wtf(final Throwable t, final String format,
 			final Object... args) {
 		println(LogLevel.ASSERT, t, format, args);
+	}
+
+	@Override
+	public void wtf(final String message) {
+		println(LogLevel.ASSERT, null, message);
+	}
+
+	@Override
+	public void wtf(final Throwable t, final String message) {
+		println(LogLevel.ASSERT, t, message);
 	}
 
 }
