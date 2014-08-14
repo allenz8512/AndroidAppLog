@@ -29,6 +29,24 @@ public class Utils {
 	}
 
 	/**
+	 * Get the final tag for the class.
+	 * 
+	 * @param classFullName
+	 *            fullname(with package) of the class
+	 * @param tag
+	 *            tag in configure
+	 * @return the tag for the class
+	 * @since 0.2.0-RELEASE
+	 */
+	public static String finalTag(final String classFullName, final String tag) {
+		if (tag != null) {
+			return tag;
+		}
+		final int dot = classFullName.lastIndexOf(".");
+		return dot == -1 ? classFullName : classFullName.substring(dot + 1);
+	}
+
+	/**
 	 * Get the integer value of static field the declared in specified class.
 	 * 
 	 * @param className
@@ -53,8 +71,6 @@ public class Utils {
 				return field.getInt(null);
 			}
 		} catch (final Exception e) {
-			LoggerFactory.getInternalLogger().verbose(e,
-					"Can not get the value of %s.%s", className, fieldName);
 		}
 		return defaultValue;
 	}
@@ -85,8 +101,6 @@ public class Utils {
 				return field.getBoolean(null);
 			}
 		} catch (final Exception e) {
-			LoggerFactory.getInternalLogger().verbose(e,
-					"Can not get the value of %s.%s", className, fieldName);
 		}
 		return defaultValue;
 	}
