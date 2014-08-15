@@ -1,6 +1,7 @@
 package me.allenz.zlog;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -34,6 +35,7 @@ class PropertyConfigurator {
 							// before parsing other properties
 		loadRootLoggerConfig(repository);
 		loadLoggerConfigs(repository);
+		updateLoggersInUse(repository);
 	};
 
 	private void loadDebugConfig() {
@@ -95,6 +97,46 @@ class PropertyConfigurator {
 				}
 			}
 		}
+	}
+
+	private void updateLoggersInUse(final ConfigureRepository repository) {
+		final List<Logger> loggers = repository.getAllLoggers();
+		if (loggers.isEmpty()) {
+			return;
+		}
+		for (final Logger logger : loggers) {
+			final SimpleLogger simpleLogger = (SimpleLogger) logger;
+			final String name = simpleLogger.getName();
+			LoggerConfig loggerConfig = repository.getLoggerConfig(name);
+			if (loggerConfig != null) {
+				updateSimpleLogger(simpleLogger, loggerConfig);
+			} else {
+				boolean parentFound = false;
+				for (int i = name.lastIndexOf('.'); i >= 0; i = name
+						.lastIndexOf('.', i - 1)) {
+					final String parentPackage = name.substring(0, i);
+					loggerConfig = repository.getLoggerConfig(parentPackage);
+					if (loggerConfig != null) {
+						updateSimpleLogger(simpleLogger, loggerConfig);
+						parentFound = true;
+						break;
+					}
+				}
+				if (!parentFound) {
+					updateSimpleLogger(simpleLogger,
+							repository.getRootLoggerConfig());
+				}
+			}
+		}
+	}
+
+	private void updateSimpleLogger(final SimpleLogger logger,
+			final LoggerConfig loggerConfig) {
+		final String tag = loggerConfig.getTag() == null ? logger.getTag()
+				: loggerConfig.getTag();
+		logger.setLevel(loggerConfig.getLevel());
+		logger.setTag(tag);
+		logger.setThread(loggerConfig.isThread());
 	}
 
 	private LoggerConfig parseLoggerConfig(final String name,
@@ -172,7 +214,7 @@ class PropertyConfigurator {
 	 * 
 	 * In {@link android.util.Log#isLoggable(String tag, int level)}, the size
 	 * of argument 'tag' should be no greater than 23 bytes or we will receive
-	 * an exception, simplely not to call this method to avoid it.
+	 * an exception, simplely not to call the method to avoid it.
 	 * <p>
 	 * 
 	 * Reference:

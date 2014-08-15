@@ -1,6 +1,8 @@
 package me.allenz.zlog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,6 +61,10 @@ class ConfigureRepository {
 
 	public void addLogger(final String name, final Logger logger) {
 		loggers.put(name, logger);
+	}
+
+	public List<Logger> getAllLoggers() {
+		return new ArrayList<Logger>(loggers.values());
 	}
 
 	/**
