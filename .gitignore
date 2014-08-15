@@ -2,3 +2,6 @@
 /gen/
 /bin/
 .Readme.md.html
+/.settings/
+.classpath
+.project

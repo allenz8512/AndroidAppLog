@@ -1,6 +1,0 @@
-eclipse.preferences.version=1
-extraProperties=sonar.jdbc.username\=root\r\nsonar.jdbc.url\=jdbc\:mysql\://localhost\:3306/sonar?useUnicode\r\nsonar.jdbc.driverClassName\=com.mysql.jdbc.Driver\r\nsonar.jdbc.password\=qazxcdews
-lastAnalysisDate=1408033791940
-projectKey=me.allenz\:zlog
-serverUrl=http\://localhost\:9000
-version=2
