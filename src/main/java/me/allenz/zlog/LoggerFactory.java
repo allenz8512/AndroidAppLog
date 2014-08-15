@@ -24,12 +24,15 @@ public class LoggerFactory {
 	private static Context appContext;
 	private static ConfigureRepository repository = new ConfigureRepository();
 	private static CallerResolver callerResolver = new CallerResolver();
+	private static boolean tryToloadPropertiesFromClasspath = false;
+	private static boolean loadPropertiesSuccess = false;
 
 	/**
 	 * Initialize zlog.
 	 * 
 	 * @param context
 	 *            the applicationContext of the app
+	 * @since 0.1.0-RELEASE
 	 */
 	public static void init(final Context context) {
 		init(context, LogLevel.WARN);// by default, prints log that level equals
@@ -43,10 +46,14 @@ public class LoggerFactory {
 	 *            the applicationContext of the app
 	 * @param releaseRootLoggerLevel
 	 *            log level of the root logger in release mode
+	 * @since 0.2.0-RELEASE
 	 */
 	public static void init(final Context context,
 			final LogLevel releaseRootLoggerLevel) {
 		synchronized (LoggerFactory.class) {
+			if (loadPropertiesSuccess) {
+				return;
+			}
 			if (context == null) {
 				internalLogger
 						.warn("zlog can not read configure file because the context is null,"
@@ -59,10 +66,14 @@ public class LoggerFactory {
 			// try to load config
 			final Properties configProperties = locateAndLoadProperties();
 			if (configProperties != null) {
-				new PropertyConfigurator(configProperties)
-						.doConfigure(repository);
+				parseProperties(configProperties);
 			}
 		}
+	}
+
+	private static void parseProperties(final Properties configProperties) {
+		new PropertyConfigurator(configProperties).doConfigure(repository);
+		loadPropertiesSuccess = true;
 	}
 
 	/**
@@ -78,6 +89,8 @@ public class LoggerFactory {
 		try {
 			// search assets
 			in = appContext.getAssets().open(filename);
+			internalLogger.verbose("find %s.properties in assets",
+					CONFIG_FILE_NAME);
 		} catch (final IOException e) {
 		}
 		if (in == null) {
@@ -88,14 +101,47 @@ public class LoggerFactory {
 						+ ".R$raw", CONFIG_FILE_NAME, -1);
 				if (id != -1) {
 					in = appContext.getResources().openRawResource(id);
+					internalLogger.verbose("find %s.properties res/raw",
+							CONFIG_FILE_NAME);
 				}
 			} catch (final Exception e) {
 			}
 		}
 		if (in == null) {
-			return null;
+			// search classpath
+			in = readConfiguresFromClasspath();
 		}
 		// load the input steam into properties
+		return loadProperties(in);
+	}
+
+	private static InputStream readConfiguresFromClasspath() {
+		tryToloadPropertiesFromClasspath = true;
+		final String filename = CONFIG_FILE_NAME + ".properties";
+		InputStream in = null;
+		try {
+			in = LoggerFactory.class.getClassLoader().getResourceAsStream(
+					filename);
+		} catch (final Exception e) {
+		}
+		if (in == null) {
+			try {
+				in = ClassLoader.getSystemClassLoader().getResourceAsStream(
+						filename);
+			} catch (final Exception e) {
+			}
+		}
+		if (in != null) {
+			internalLogger.verbose("find %s.properties in classpath",
+					CONFIG_FILE_NAME);
+		}
+		return in;
+	}
+
+	private static Properties loadProperties(final InputStream in) {
+		if (in == null) {
+			return null;
+		}
 		final Properties properties = new Properties();
 		try {
 			properties.load(in);
@@ -132,8 +178,11 @@ public class LoggerFactory {
 	}
 
 	/**
-	 * Destroy zlog.
+	 * @deprecated Destroy zlog.<br>
+	 *             <strong>Do not use this method.</strong>
+	 * @since 0.1.0-RELEASE
 	 */
+	@Deprecated
 	public static void destroy() {
 		appContext = null;
 		callerResolver = null;
@@ -144,14 +193,21 @@ public class LoggerFactory {
 	/**
 	 * Get the logger of the calling class.
 	 * 
-	 * @return Logger
+	 * @return logger of the calling class
+	 * @since 0.1.0-RELEASE
 	 */
 	public static Logger getLogger() {
 		synchronized (LoggerFactory.class) {
-			Logger logger = null;
+			if (!loadPropertiesSuccess && !tryToloadPropertiesFromClasspath) {
+				// try to load configures if have not call init() method first
+				final Properties configProperties = loadProperties(readConfiguresFromClasspath());
+				if (configProperties != null) {
+					parseProperties(configProperties);
+				}
+			}
 			final String caller = getCallerClassName();
 			internalLogger.verbose("Caller: %s", caller);
-			logger = getDeclaredLogger(caller);
+			final Logger logger = getDeclaredLogger(caller);
 			return logger != null ? logger : getNewLogger(caller);
 		}
 	}
@@ -232,6 +288,12 @@ public class LoggerFactory {
 		return null;
 	}
 
+	/**
+	 * The class for getting caller stack classname faster.
+	 * 
+	 * @author Allenz
+	 * @since 0.1.0-RELEASE
+	 */
 	private static final class CallerResolver extends SecurityManager {
 
 		@SuppressWarnings("rawtypes")
