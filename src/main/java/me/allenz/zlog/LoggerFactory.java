@@ -19,6 +19,7 @@ public class LoggerFactory {
 
 	private static final String LOGGER_FACTORY_CLASS_NAME = LoggerFactory.class
 			.getName();
+	private static final LogLevel DEFAULT_RELEASE_LOG_LEVEL = LogLevel.WARN;
 	private static final String CONFIG_FILE_NAME = "zlog";
 
 	private static Context appContext;
@@ -35,8 +36,7 @@ public class LoggerFactory {
 	 * @since 0.1.0-RELEASE
 	 */
 	public static void init(final Context context) {
-		init(context, LogLevel.WARN);// by default, prints log that level equals
-										// or higher than WARN
+		init(context, DEFAULT_RELEASE_LOG_LEVEL);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class LoggerFactory {
 			if (context == null) {
 				internalLogger
 						.warn("zlog can not read configure file because the context is null,"
-								+ " zlog will run at safe mode");
+								+ " zlog will run in safe mode");
 				return;
 			}
 			appContext = context.getApplicationContext();
@@ -107,39 +107,36 @@ public class LoggerFactory {
 			} catch (final Exception e) {
 			}
 		}
-		if (in == null) {
-			// search classpath
-			in = readConfiguresFromClasspath();
-		}
-		// load the input steam into properties
 		return loadProperties(in);
 	}
 
 	private static InputStream readConfiguresFromClasspath() {
 		tryToloadPropertiesFromClasspath = true;
 		final String filename = CONFIG_FILE_NAME + ".properties";
-		InputStream in = null;
-		try {
-			in = LoggerFactory.class.getClassLoader().getResourceAsStream(
-					filename);
-		} catch (final Exception e) {
-		}
-		if (in == null) {
-			try {
-				in = ClassLoader.getSystemClassLoader().getResourceAsStream(
-						filename);
-			} catch (final Exception e) {
-			}
-		}
+		LoggerFactory.class.getClassLoader();
+		// search assets
+		InputStream in = LoggerFactory.class.getClassLoader()
+				.getResourceAsStream("assets/" + filename);
 		if (in != null) {
-			internalLogger.verbose("find %s.properties in classpath",
+			internalLogger.verbose("find %s.properties in assets",
 					CONFIG_FILE_NAME);
+		} else {
+			// search res/raw
+			in = LoggerFactory.class.getClassLoader().getResourceAsStream(
+					"res/raw/" + filename);
+			if (in != null) {
+				internalLogger.verbose("find %s.properties in res/raw",
+						CONFIG_FILE_NAME);
+			}
 		}
 		return in;
 	}
 
 	private static Properties loadProperties(final InputStream in) {
 		if (in == null) {
+			internalLogger.verbose(
+					"no %s.properties found, zlog will run in safe mode",
+					CONFIG_FILE_NAME);
 			return null;
 		}
 		final Properties properties = new Properties();
@@ -165,7 +162,12 @@ public class LoggerFactory {
 	 *            log level of the root logger in release mode
 	 */
 	private static void checkEnvironmentAndSetup(final LogLevel level) {
-		final String packageName = appContext.getPackageName();
+		String packageName;
+		if (appContext != null) {
+			packageName = appContext.getPackageName();
+		} else {
+			packageName = getPackageNameFromAndroidManifest();
+		}
 		final boolean underDevelopment = Utils.booleanReflectStaticFieldValue(
 				packageName + "BuildConfig", "DEBUG", true);
 		if (!underDevelopment) {// if the app is released
@@ -175,6 +177,14 @@ public class LoggerFactory {
 			repository.setRootLoggerConfig(new LoggerConfig("root", null,
 					level, false));
 		}
+	}
+
+	private static String getPackageNameFromAndroidManifest() {
+		// TODO Get package name from 'AndroidManifest.xml' without using
+		// ApplicationContext
+		final InputStream in = LoggerFactory.class.getClassLoader()
+				.getResourceAsStream("AndroidManifest.xml");
+		return null;
 	}
 
 	/**
@@ -200,6 +210,7 @@ public class LoggerFactory {
 		synchronized (LoggerFactory.class) {
 			if (!loadPropertiesSuccess && !tryToloadPropertiesFromClasspath) {
 				// try to load configures if have not call init() method first
+				checkEnvironmentAndSetup(DEFAULT_RELEASE_LOG_LEVEL);
 				final Properties configProperties = loadProperties(readConfiguresFromClasspath());
 				if (configProperties != null) {
 					parseProperties(configProperties);
@@ -289,7 +300,7 @@ public class LoggerFactory {
 	}
 
 	/**
-	 * The class for getting caller stack classname faster.
+	 * The class for getting call stack classname faster.
 	 * 
 	 * @author Allenz
 	 * @since 0.1.0-RELEASE
