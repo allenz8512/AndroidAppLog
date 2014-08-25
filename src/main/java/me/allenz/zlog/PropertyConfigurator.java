@@ -1,10 +1,13 @@
 package me.allenz.zlog;
 
+import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
+import android.os.Environment;
 
 /**
  * A configurator that parses zlog.properties for loading zlog configures.
@@ -17,15 +20,22 @@ class PropertyConfigurator {
 	private static final String DEBUG_PREFIX = "debug";
 	private static final String ROOT_PREFIX = "root";
 	private static final String LOGGER_PREFIX = "logger.";
+	private static final String FILE_PREFIX = "file";
+	private static final String FILE_INTERNAL = "internal";
+	private static final String FILE_EXTERNAL = "external";
+	private static final String DEFAULT_LOG_FILE_NAME = "zlog.log";
 	private static final Pattern PACKAGE_NAME_PATTERN = Pattern
 			.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
 	private static final Logger internalLogger = ConfigureRepository
 			.getInternalLogger();
 
+	private String packageName;
 	private Properties properties;
 
-	public PropertyConfigurator(final Properties properties) {
+	public PropertyConfigurator(final String packageName,
+			final Properties properties) {
+		this.packageName = packageName;
 		this.properties = properties;
 	}
 
@@ -33,6 +43,7 @@ class PropertyConfigurator {
 		repository.resetToDefault();
 		loadDebugConfig();// check if need to close internal logging first
 							// before parsing other properties
+		loadLogFileConfig(repository);
 		loadRootLoggerConfig(repository);
 		loadLoggerConfigs(repository);
 		updateLoggersInUse(repository);
@@ -40,18 +51,59 @@ class PropertyConfigurator {
 
 	private void loadDebugConfig() {
 		final String value = (String) properties.get(DEBUG_PREFIX);
-		if (value == null) {
+		if (Utils.isEmpty(value)) {
 			return;
 		}
 		final Boolean debug = Utils.parseBoolean(value);
-		if (!debug) {
+		if (debug == null || !debug) {
 			ConfigureRepository.setInternalLogLevel(LogLevel.OFF);
+		}
+	}
+
+	private void loadLogFileConfig(final ConfigureRepository repository) {
+		final String value = (String) properties.get(FILE_PREFIX);
+		if (Utils.isEmpty(value)) {
+			return;
+		}
+		String useLogFileStr;
+		String dirStr = null;
+		final int comma = value.indexOf(",");
+		if (comma == -1) {
+			useLogFileStr = value;
+		} else {
+			useLogFileStr = value.substring(0, comma);
+			dirStr = value.substring(comma + 1);
+		}
+		final Boolean useLogFile = Utils.parseBoolean(useLogFileStr);
+		if (packageName == null || useLogFile == null || !useLogFile) {
+			return;
+		} else {
+			File logFile;
+			if (Utils.isEmpty(dirStr) || dirStr.equalsIgnoreCase(FILE_INTERNAL)) {
+				logFile = internalLogFile();
+			} else if (dirStr.equalsIgnoreCase(FILE_EXTERNAL)) {
+				logFile = externalLogFile();
+			} else {
+				final File dir = new File(dirStr);
+				if (!dir.exists()) {
+					if (!dir.mkdirs()) {
+						internalLogger
+								.verbose(
+										"can not create parent directory for log file: %s",
+										dirStr);
+						return;
+					}
+				}
+				logFile = new File(dirStr, DEFAULT_LOG_FILE_NAME);
+			}
+			repository.setLogFile(logFile);
+			internalLogger.verbose("log file path: %s", logFile.getPath());
 		}
 	}
 
 	private void loadRootLoggerConfig(final ConfigureRepository repository) {
 		final String value = (String) properties.get(ROOT_PREFIX);
-		if (value == null) {
+		if (Utils.isEmpty(value)) {
 			return;
 		}
 		final LoggerConfig loggerConfig = parseLoggerConfig(ROOT_PREFIX, value);
@@ -240,4 +292,27 @@ class PropertyConfigurator {
 		return Utils.isEmpty(tag) ? null : tag;
 	}
 
+	private File internalLogFile() {
+		final String dirPath = "/data/data/" + packageName + "/files";
+		final File dir = new File(dirPath);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		return new File(dir, DEFAULT_LOG_FILE_NAME);
+	}
+
+	private File externalLogFile() {
+		if (!Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
+			return null;
+		} else {
+			final String dirPath = Environment.getExternalStorageDirectory()
+					.getPath() + "/Android/data/" + packageName + "/files";
+			final File dir = new File(dirPath);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			return new File(dir, DEFAULT_LOG_FILE_NAME);
+		}
+	}
 }

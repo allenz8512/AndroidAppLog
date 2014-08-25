@@ -27,6 +27,7 @@ public class LoggerFactory {
 	private static CallerResolver callerResolver = new CallerResolver();
 	private static boolean tryToloadPropertiesFromClasspath = false;
 	private static boolean loadPropertiesSuccess = false;
+	private static String packageName = null;
 
 	/**
 	 * Initialize zlog.
@@ -72,7 +73,8 @@ public class LoggerFactory {
 	}
 
 	private static void parseProperties(final Properties configProperties) {
-		new PropertyConfigurator(configProperties).doConfigure(repository);
+		new PropertyConfigurator(packageName, configProperties)
+				.doConfigure(repository);
 		loadPropertiesSuccess = true;
 	}
 
@@ -162,7 +164,6 @@ public class LoggerFactory {
 	 *            log level of the root logger in release mode
 	 */
 	private static void checkEnvironmentAndSetup(final LogLevel level) {
-		String packageName;
 		if (appContext != null) {
 			packageName = appContext.getPackageName();
 		} else {

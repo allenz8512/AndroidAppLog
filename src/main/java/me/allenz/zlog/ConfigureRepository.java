@@ -1,5 +1,6 @@
 package me.allenz.zlog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ class ConfigureRepository {
 	private LoggerConfig rootLoggerConfig;
 	private Map<String, LoggerConfig> loggerConfigs;
 	private Map<String, Logger> loggers;
+	private File logFile;
 
 	public ConfigureRepository() {
 		loggerConfigs = new HashMap<String, LoggerConfig>();
@@ -65,6 +67,14 @@ class ConfigureRepository {
 
 	public List<Logger> getAllLoggers() {
 		return new ArrayList<Logger>(loggers.values());
+	}
+
+	public File getLogFile() {
+		return logFile;
+	}
+
+	public void setLogFile(final File logFile) {
+		this.logFile = logFile;
 	}
 
 	/**
