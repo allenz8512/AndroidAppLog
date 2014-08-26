@@ -98,6 +98,8 @@ public class LogWriter {
 
 	private void writeInternal(final LogEvent logEvent) throws IOException {
 		out.write(logEvent.toString().getBytes());
+		out.flush();
+		out.getFD().sync();
 	}
 
 	private static class LogEvent {
