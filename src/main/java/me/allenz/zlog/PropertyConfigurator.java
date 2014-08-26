@@ -66,27 +66,28 @@ class PropertyConfigurator {
 			return;
 		}
 		String useLogFileStr;
-		String dirStr = null;
+		String fileStr = null;
 		final int comma = value.indexOf(",");
 		if (comma == -1) {
 			useLogFileStr = value;
 		} else {
 			useLogFileStr = value.substring(0, comma);
-			dirStr = value.substring(comma + 1);
+			fileStr = value.substring(comma + 1);
 		}
 		final Boolean useLogFile = Utils.parseBoolean(useLogFileStr);
 		if (useLogFile == null || !useLogFile) {
 			return;
 		} else {
 			File logFile;
-			if (Utils.isEmpty(dirStr) || dirStr.equalsIgnoreCase(FILE_INTERNAL)) {
+			if (Utils.isEmpty(fileStr)
+					|| fileStr.equalsIgnoreCase(FILE_INTERNAL)) {
 				if (packageName == null) {
 					internalLogger
 							.verbose("can not read package name, file log will not start");
 					return;
 				}
 				logFile = internalLogFile();
-			} else if (dirStr.equalsIgnoreCase(FILE_EXTERNAL)) {
+			} else if (fileStr.equalsIgnoreCase(FILE_EXTERNAL)) {
 				if (packageName == null) {
 					internalLogger
 							.verbose("can not read package name, file log will not start");
@@ -94,17 +95,17 @@ class PropertyConfigurator {
 				}
 				logFile = externalLogFile();
 			} else {
-				final File dir = new File(dirStr);
+				logFile = new File(fileStr);
+				final File dir = logFile.getParentFile();
 				if (!dir.exists()) {
 					if (!dir.mkdirs()) {
 						internalLogger
 								.verbose(
 										"can not create parent directory for log file: %s",
-										dirStr);
+										fileStr);
 						return;
 					}
 				}
-				logFile = new File(dirStr, DEFAULT_LOG_FILE_NAME);
 			}
 			final LogWriter logWriter = new LogWriter(logFile);
 			logWriter.start();
