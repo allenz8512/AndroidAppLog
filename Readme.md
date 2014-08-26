@@ -4,6 +4,7 @@ A lightweighted logger for android app
 Put zlog.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
 	debug=[Show zlog debug log:True|False]
+	file=[Output to file:True|False],[Internal|External|Custom file path]
 	root=[Log level],[Log tag],[Show thread name in tag:True|False]
 	logger.[Package or class fullname]=[Log level],[Log tag],[Show thread name in tag:True|False]
 
@@ -30,6 +31,7 @@ Now use loggers just like using slf4j!
 zlog.properties
 
 	debug=false  
+	file=true,internal  
 	root=debug  
 	logger.com.example.app.MainActivity=info,Activity,true
 	logger.com.example.app=warn
@@ -45,7 +47,7 @@ App.java
 	
 		@Override
 		public void onCreate() {
-			LoggerFactory.init(this);
+			LoggerFactory.init(this); // must be initialize in your custom Application
 			super.onCreate();
 		}
 	
@@ -118,11 +120,11 @@ MainActivity.java
 	
 	}
 
-Log output:
+Log output in '/data/data/com.example.app/files/zlog.log':
 
->08-13 14:25:55.489: I/[main]Activity(1245): info  
->08-13 14:25:55.489: W/[main]Activity(1245): warn  
->08-13 14:25:55.489: W/A(1245): warn  
->08-13 14:25:55.489: D/B(1245): debug  
->08-13 14:25:55.489: I/B(1245): info  
->08-13 14:25:55.489: W/B(1245): warn
+>2014-08-26 12:05:50.269	INFO	[main]Activity	info  
+>2014-08-26 12:05:50.269	WARN	[main]Activity	warn  
+>2014-08-26 12:05:50.269	WARN	A	warn  
+>2014-08-26 12:05:50.269	DEBUG	B	debug  
+>2014-08-26 12:05:50.269	INFO	B	info  
+>2014-08-26 12:05:50.269	WARN	B	warn
