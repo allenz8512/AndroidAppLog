@@ -1,6 +1,5 @@
 package me.allenz.zlog;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,8 @@ class ConfigureRepository {
 	private static final String DEFAULT_INTERNAL_LOGGER_TAG = "zlog";
 	private static final LogLevel DEFAULT_INTERNAL_LOG_LEVEL = LogLevel.VERBOSE;
 	private static final SimpleLogger internalLogger = new SimpleLogger(null,
-			DEFAULT_INTERNAL_LOGGER_TAG, DEFAULT_INTERNAL_LOG_LEVEL, false);
+			DEFAULT_INTERNAL_LOGGER_TAG, DEFAULT_INTERNAL_LOG_LEVEL, false,
+			null);
 
 	public static Logger getInternalLogger() {
 		return internalLogger;
@@ -33,7 +33,7 @@ class ConfigureRepository {
 	private LoggerConfig rootLoggerConfig;
 	private Map<String, LoggerConfig> loggerConfigs;
 	private Map<String, Logger> loggers;
-	private File logFile;
+	private LogWriter logWriter;
 
 	public ConfigureRepository() {
 		loggerConfigs = new HashMap<String, LoggerConfig>();
@@ -69,12 +69,12 @@ class ConfigureRepository {
 		return new ArrayList<Logger>(loggers.values());
 	}
 
-	public File getLogFile() {
-		return logFile;
+	public LogWriter getLogWriter() {
+		return logWriter;
 	}
 
-	public void setLogFile(final File logFile) {
-		this.logFile = logFile;
+	public void setLogWriter(final LogWriter logWriter) {
+		this.logWriter = logWriter;
 	}
 
 	/**

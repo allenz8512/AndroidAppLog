@@ -189,15 +189,15 @@ public class LoggerFactory {
 	}
 
 	/**
-	 * @deprecated Destroy zlog.<br>
-	 *             <strong>Do not use this method.</strong>
+	 * Destroy zlog.
+	 * 
 	 * @since 0.1.0-RELEASE
 	 */
 	@Deprecated
 	public static void destroy() {
 		appContext = null;
 		callerResolver = null;
-		repository.resetToDefault();
+		repository.getLogWriter().stop();
 		repository = null;
 	}
 
@@ -268,7 +268,8 @@ public class LoggerFactory {
 		final String tag = loggerConfig.getTag() == null ? className
 				: loggerConfig.getTag();
 		final Logger logger = new SimpleLogger(caller, tag,
-				loggerConfig.getLevel(), loggerConfig.isThread());
+				loggerConfig.getLevel(), loggerConfig.isThread(),
+				repository.getLogWriter());
 		internalLogger.verbose("logger created: %s", logger);
 		return logger;
 	}

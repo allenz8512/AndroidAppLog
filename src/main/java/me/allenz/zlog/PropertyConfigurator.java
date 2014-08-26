@@ -96,7 +96,9 @@ class PropertyConfigurator {
 				}
 				logFile = new File(dirStr, DEFAULT_LOG_FILE_NAME);
 			}
-			repository.setLogFile(logFile);
+			final LogWriter logWriter = new LogWriter(logFile);
+			logWriter.start();
+			repository.setLogWriter(logWriter);
 			internalLogger.verbose("log file path: %s", logFile.getPath());
 		}
 	}

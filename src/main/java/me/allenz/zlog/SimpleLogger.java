@@ -12,6 +12,8 @@ import android.util.Log;
  */
 class SimpleLogger extends LoggerConfig implements Logger {
 
+	private LogWriter logWriter;
+
 	/**
 	 * Create a new SimpleLogger instance.
 	 * 
@@ -23,11 +25,15 @@ class SimpleLogger extends LoggerConfig implements Logger {
 	 *            the tag of the logger
 	 * @param thread
 	 *            if true, shows thread name as a prefix of the tag
-	 * @since 0.2.0-RELEASE
+	 * @param logWriter
+	 *            the writer for output log to file
+	 * @since 0.3.0-RELEASE
 	 */
 	public SimpleLogger(final String name, final String tag,
-			final LogLevel level, final boolean thread) {
+			final LogLevel level, final boolean thread,
+			final LogWriter logWriter) {
 		super(name, tag, level, thread);
+		this.logWriter = logWriter;
 	}
 
 	/**
@@ -56,13 +62,19 @@ class SimpleLogger extends LoggerConfig implements Logger {
 						+ Log.getStackTraceString(t) : Log
 						.getStackTraceString(t);
 			}
-			if (thread) {
+			String tag;
+			if (thread) {// shows current thread name in tag
 				final StringBuilder sb = new StringBuilder();
 				sb.append("[").append(Thread.currentThread().getName())
-						.append("]").append(tag);
-				Log.println(level.intValue(), sb.toString(), message);
+						.append("]").append(this.tag);
+				tag = sb.toString();
 			} else {
-				Log.println(level.intValue(), tag, message);
+				tag = this.tag;
+			}
+			Log.println(level.intValue(), tag, message);
+			// try to write log on disk
+			if (logWriter != null && logWriter.isStarted()) {
+				logWriter.write(level, tag, message);
 			}
 		}
 	}
