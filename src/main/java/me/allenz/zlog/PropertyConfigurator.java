@@ -75,13 +75,23 @@ class PropertyConfigurator {
 			dirStr = value.substring(comma + 1);
 		}
 		final Boolean useLogFile = Utils.parseBoolean(useLogFileStr);
-		if (packageName == null || useLogFile == null || !useLogFile) {
+		if (useLogFile == null || !useLogFile) {
 			return;
 		} else {
 			File logFile;
 			if (Utils.isEmpty(dirStr) || dirStr.equalsIgnoreCase(FILE_INTERNAL)) {
+				if (packageName == null) {
+					internalLogger
+							.verbose("can not read package name, file log will not start");
+					return;
+				}
 				logFile = internalLogFile();
 			} else if (dirStr.equalsIgnoreCase(FILE_EXTERNAL)) {
+				if (packageName == null) {
+					internalLogger
+							.verbose("can not read package name, file log will not start");
+					return;
+				}
 				logFile = externalLogFile();
 			} else {
 				final File dir = new File(dirStr);
