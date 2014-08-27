@@ -9,7 +9,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * A consumer class that consume log events, and storage them to specify log
+ * A consumer class that consumes log events, and storage them to specify log
  * file.
  * 
  * @author Allenz
@@ -51,11 +51,11 @@ public class LogWriter {
 		try {
 			createAndOpenLogFile();
 			worker.start();
+			started = true;
 		} catch (final Exception e) {
 			stop();
 			internalLogger.verbose(e, "can not start LogWriter");
 		}
-		started = true;
 	}
 
 	private void createAndOpenLogFile() throws IOException {
