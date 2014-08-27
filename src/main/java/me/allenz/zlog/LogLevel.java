@@ -9,7 +9,7 @@ import android.util.Log;
  * @since 0.1.0-RELEASE
  * @see android.util.Log
  */
-enum LogLevel {
+public enum LogLevel {
 
 	/** @see android.util.Log#VERBOSE */
 	VERBOSE(Log.VERBOSE),

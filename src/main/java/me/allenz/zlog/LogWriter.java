@@ -15,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
  * @author Allenz
  * @since 0.3.0-RELEASE
  */
-public class LogWriter {
+class LogWriter {
 
 	private static final int DEFAULT_LOG_EVENT_QUEUE_SIZE = 50;
 
