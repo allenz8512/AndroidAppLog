@@ -208,6 +208,18 @@ public class LoggerFactory {
 	 * @since 0.1.0-RELEASE
 	 */
 	public static Logger getLogger() {
+		return getLogger(getCallerClassName());
+	}
+
+	/**
+	 * Get the logger of specify class name.
+	 * 
+	 * @param className
+	 *            the name of class
+	 * @return logger of the class name
+	 * @since 0.4.0
+	 */
+	public static Logger getLogger(final String className) {
 		synchronized (LoggerFactory.class) {
 			if (!loadPropertiesSuccess && !tryToloadPropertiesFromClasspath) {
 				// try to load configures if have not call init() method first
@@ -217,10 +229,9 @@ public class LoggerFactory {
 					parseProperties(configProperties);
 				}
 			}
-			final String caller = getCallerClassName();
-			internalLogger.verbose("Caller: %s", caller);
-			final Logger logger = getDeclaredLogger(caller);
-			return logger != null ? logger : getNewLogger(caller);
+			internalLogger.verbose("Caller: %s", className);
+			final Logger logger = getDeclaredLogger(className);
+			return logger != null ? logger : getNewLogger(className);
 		}
 	}
 
