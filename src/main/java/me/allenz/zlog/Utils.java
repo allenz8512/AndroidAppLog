@@ -15,6 +15,8 @@ class Utils {
 		throw new UnsupportedOperationException();
 	}
 
+	private static CallerResolver callerResolver = new CallerResolver();
+
 	/**
 	 * Consider if the string is empty.
 	 * 
@@ -125,5 +127,60 @@ class Utils {
 		} catch (final Exception e) {
 		}
 		return defaultValue;
+	}
+
+	public static String getCallerClassName(final String targetClass,
+			final int forwardIndex) {
+		final Class<?> caller = callerResolver.getCaller(targetClass,
+				forwardIndex);
+		if (caller == null) {
+			final StackTraceElement callerStackTrace = getCallerStackTrace(
+					targetClass, forwardIndex);
+			return callerStackTrace == null ? null : callerStackTrace
+					.getClassName();
+		} else {
+			return caller.getName();
+		}
+	}
+
+	private static StackTraceElement getCallerStackTrace(
+			final String targetClass, final int forwardIndex) {
+		final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+		if (stackTrace == null || stackTrace.length <= 0) {
+			return null;
+		}
+
+		for (int i = 0; i < stackTrace.length; i++) {
+			final StackTraceElement stackTraceElement = stackTrace[i];
+			if (stackTraceElement.getClassName().equals(targetClass)) {
+				return stackTrace[i + forwardIndex];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The class for getting call stack classname faster.
+	 * 
+	 * @author Allenz
+	 * @since 0.1.0-RELEASE
+	 */
+	private static final class CallerResolver extends SecurityManager {
+
+		@SuppressWarnings("rawtypes")
+		public Class<?> getCaller(final String targetClass,
+				final int forwardIndex) {
+			final Class[] classContext = getClassContext();
+			if (classContext == null || classContext.length <= 0) {
+				return null;
+			}
+			for (int i = 0; i < classContext.length; i++) {
+				final Class clazz = classContext[i];
+				if (clazz.getName().equals(targetClass)) {
+					return classContext[i + forwardIndex];
+				}
+			}
+			return null;
+		}
 	}
 }

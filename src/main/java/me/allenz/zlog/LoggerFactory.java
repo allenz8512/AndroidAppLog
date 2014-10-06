@@ -24,7 +24,6 @@ public class LoggerFactory {
 
 	private static Context appContext;
 	private static ConfigureRepository repository = new ConfigureRepository();
-	private static CallerResolver callerResolver = new CallerResolver();
 	private static boolean tryToloadPropertiesFromClasspath = false;
 	private static boolean loadPropertiesSuccess = false;
 	private static String packageName = null;
@@ -196,7 +195,6 @@ public class LoggerFactory {
 	@Deprecated
 	public static void destroy() {
 		appContext = null;
-		callerResolver = null;
 		repository.getLogWriter().stop();
 		repository = null;
 	}
@@ -208,7 +206,7 @@ public class LoggerFactory {
 	 * @since 0.1.0-RELEASE
 	 */
 	public static Logger getLogger() {
-		return getLogger(getCallerClassName());
+		return getLogger(Utils.getCallerClassName(LOGGER_FACTORY_CLASS_NAME, 1));
 	}
 
 	/**
@@ -283,56 +281,5 @@ public class LoggerFactory {
 				repository.getLogWriter());
 		internalLogger.verbose("logger created: %s", logger);
 		return logger;
-	}
-
-	private static String getCallerClassName() {
-		final Class<?> caller = callerResolver.getCaller();
-		if (caller == null) {
-			final StackTraceElement callerStackTrace = getCallerStackTrace();
-			return callerStackTrace == null ? null : callerStackTrace
-					.getClassName();
-		} else {
-			return caller.getName();
-		}
-	}
-
-	private static StackTraceElement getCallerStackTrace() {
-		final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-		if (stackTrace == null || stackTrace.length <= 0) {
-			return null;
-		}
-
-		for (int i = 0; i < stackTrace.length; i++) {
-			final StackTraceElement stackTraceElement = stackTrace[i];
-			if (stackTraceElement.getClassName().equals(
-					LOGGER_FACTORY_CLASS_NAME)) {
-				return stackTrace[i + 3];
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * The class for getting call stack classname faster.
-	 * 
-	 * @author Allenz
-	 * @since 0.1.0-RELEASE
-	 */
-	private static final class CallerResolver extends SecurityManager {
-
-		@SuppressWarnings("rawtypes")
-		public Class<?> getCaller() {
-			final Class[] classContext = getClassContext();
-			if (classContext == null || classContext.length <= 0) {
-				return null;
-			}
-			for (int i = 0; i < classContext.length; i++) {
-				final Class clazz = classContext[i];
-				if (clazz.getName().equals(LOGGER_FACTORY_CLASS_NAME)) {
-					return classContext[i + 2];
-				}
-			}
-			return null;
-		}
 	}
 }
