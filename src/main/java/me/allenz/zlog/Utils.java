@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
  * @author Allenz
  * @since 0.1.0-RELEASE
  */
-class Utils {
+public class Utils {
 
 	private Utils() {
 		throw new UnsupportedOperationException();
