@@ -296,7 +296,7 @@ public class LoggerFactory {
     }
 
     public static void printlnLogOnScreen(final LogEvent event) {
-        if (appContext == null) {
+        if (appContext == null || event == null) {
             return;
         }
         final Collection<WeakReference<TextView>> weakTextViews = repository.getTextViews();
