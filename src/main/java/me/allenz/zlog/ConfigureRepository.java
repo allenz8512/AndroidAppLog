@@ -1,9 +1,12 @@
 package me.allenz.zlog;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.widget.TextView;
 
 /**
  * Thre repository store all configures and loggers.
@@ -13,89 +16,108 @@ import java.util.Map;
  */
 class ConfigureRepository {
 
-	private static final LoggerConfig DEFAULT_ROOT_LOGGER_CONFIG = new LoggerConfig(
-			"root", null, LogLevel.VERBOSE, false);
+    private static final LoggerConfig DEFAULT_ROOT_LOGGER_CONFIG = new LoggerConfig(
+        "root", null, LogLevel.VERBOSE, false);
 
-	private static final String DEFAULT_INTERNAL_LOGGER_TAG = "zlog";
-	private static final LogLevel DEFAULT_INTERNAL_LOG_LEVEL = LogLevel.VERBOSE;
-	private static final SimpleLogger internalLogger = new SimpleLogger(null,
-			DEFAULT_INTERNAL_LOGGER_TAG, DEFAULT_INTERNAL_LOG_LEVEL, false,
-			null);
+    private static final String DEFAULT_INTERNAL_LOGGER_TAG = "zlog";
 
-	public static Logger getInternalLogger() {
-		return internalLogger;
-	}
+    private static final LogLevel DEFAULT_INTERNAL_LOG_LEVEL = LogLevel.VERBOSE;
 
-	public static void setInternalLogLevel(final LogLevel level) {
-		internalLogger.setLevel(level);
-	}
+    private static final SimpleLogger internalLogger = new SimpleLogger(null,
+        DEFAULT_INTERNAL_LOGGER_TAG, DEFAULT_INTERNAL_LOG_LEVEL, false,
+        null);
 
-	private LoggerConfig rootLoggerConfig;
-	private Map<String, LoggerConfig> loggerConfigs;
-	private Map<String, Logger> loggers;
-	private LogWriter logWriter;
+    public static Logger getInternalLogger() {
+        return internalLogger;
+    }
 
-	public ConfigureRepository() {
-		loggerConfigs = new HashMap<String, LoggerConfig>();
-		loggers = new HashMap<String, Logger>();
-		resetToDefault();
-	}
+    public static void setInternalLogLevel(final LogLevel level) {
+        internalLogger.setLevel(level);
+    }
 
-	public LoggerConfig getRootLoggerConfig() {
-		return rootLoggerConfig;
-	}
+    private LoggerConfig rootLoggerConfig;
 
-	public void setRootLoggerConfig(final LoggerConfig loggerConfig) {
-		this.rootLoggerConfig = loggerConfig;
-	}
+    private Map<String, LoggerConfig> loggerConfigs;
 
-	public LoggerConfig getLoggerConfig(final String name) {
-		return loggerConfigs.get(name);
-	}
+    private Map<String, Logger> loggers;
 
-	public void addLoggerConfig(final LoggerConfig loggerConfig) {
-		loggerConfigs.put(loggerConfig.getName(), loggerConfig);
-	}
+    private LogWriter logWriter;
 
-	public Logger getLogger(final String name) {
-		return loggers.get(name);
-	}
+    private Map<Logger, WeakReference<TextView>> associatedTextViews;
 
-	public void addLogger(final String name, final Logger logger) {
-		loggers.put(name, logger);
-	}
+    public ConfigureRepository(){
+        loggerConfigs = new HashMap<String, LoggerConfig>();
+        loggers = new HashMap<String, Logger>();
+        associatedTextViews = new HashMap<Logger, WeakReference<TextView>>();
+        resetToDefault();
+    }
 
-	public List<Logger> getAllLoggers() {
-		return new ArrayList<Logger>(loggers.values());
-	}
+    public LoggerConfig getRootLoggerConfig() {
+        return rootLoggerConfig;
+    }
 
-	public LogWriter getLogWriter() {
-		return logWriter;
-	}
+    public void setRootLoggerConfig(final LoggerConfig loggerConfig) {
+        this.rootLoggerConfig = loggerConfig;
+    }
 
-	public void setLogWriter(final LogWriter logWriter) {
-		this.logWriter = logWriter;
-	}
+    public LoggerConfig getLoggerConfig(final String name) {
+        return loggerConfigs.get(name);
+    }
 
-	/**
-	 * Reset this repository to default. That means cleanning all configures and
-	 * loggers it stored.
-	 */
-	public void resetToDefault() {
-		setInternalLogLevel(DEFAULT_INTERNAL_LOG_LEVEL);
-		setRootLoggerConfig(DEFAULT_ROOT_LOGGER_CONFIG);
-		loggerConfigs.clear();
-		if (!loggers.isEmpty()) {// If there's any logger in use, reset their
-									// configure just like default root logger
-			for (final Logger logger : loggers.values()) {
-				final SimpleLogger simpleLogger = (SimpleLogger) logger;
-				simpleLogger.setLevel(DEFAULT_ROOT_LOGGER_CONFIG.getLevel());
-				simpleLogger.setTag(Utils.finalTag(simpleLogger.getName(),
-						DEFAULT_ROOT_LOGGER_CONFIG.getTag()));
-				simpleLogger.setThread(DEFAULT_ROOT_LOGGER_CONFIG.isThread());
-			}
-		}
-		loggers.clear();
-	}
+    public void addLoggerConfig(final LoggerConfig loggerConfig) {
+        loggerConfigs.put(loggerConfig.getName(), loggerConfig);
+    }
+
+    public Logger getLogger(final String name) {
+        return loggers.get(name);
+    }
+
+    public void addLogger(final String name, final Logger logger) {
+        loggers.put(name, logger);
+    }
+
+    public List<Logger> getAllLoggers() {
+        return new ArrayList<Logger>(loggers.values());
+    }
+
+    public LogWriter getLogWriter() {
+        return logWriter;
+    }
+
+    public void setLogWriter(final LogWriter logWriter) {
+        this.logWriter = logWriter;
+    }
+
+    public TextView getAssociatedTextView(final Logger logger) {
+        if (associatedTextViews.containsKey(logger)) {
+            return associatedTextViews.get(logger).get();
+        }
+        return null;
+    }
+
+    public void associateTextView(final Logger logger, final TextView textView) {
+        associatedTextViews.put(logger, new WeakReference<TextView>(textView));
+    }
+
+    /**
+     * Reset this repository to default. That means cleanning all configures and loggers it stored.
+     */
+    public void resetToDefault() {
+        setInternalLogLevel(DEFAULT_INTERNAL_LOG_LEVEL);
+        setRootLoggerConfig(DEFAULT_ROOT_LOGGER_CONFIG);
+        loggerConfigs.clear();
+        if (!loggers.isEmpty()) {// If there's any logger in use, reset their
+                                 // configure just like default root logger
+            for (final Logger logger: loggers.values()) {
+                final SimpleLogger simpleLogger = (SimpleLogger) logger;
+                simpleLogger.setLevel(DEFAULT_ROOT_LOGGER_CONFIG.getLevel());
+                simpleLogger.setTag(Utils.finalTag(simpleLogger.getName(),
+                    DEFAULT_ROOT_LOGGER_CONFIG.getTag()));
+                simpleLogger.setThread(DEFAULT_ROOT_LOGGER_CONFIG.isThread());
+            }
+        }
+        loggers.clear();
+        associatedTextViews.clear();
+    }
 
 }
