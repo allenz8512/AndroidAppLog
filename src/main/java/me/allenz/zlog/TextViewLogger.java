@@ -14,6 +14,10 @@ public class TextViewLogger extends SimpleLogger {
         LoggerFactory.associateTextView(this, textView);
     }
 
+    public void unassociateTextView() {
+        LoggerFactory.unassociateTextView(this);
+    }
+
     @Override
     protected LogEvent println(final LogLevel level, final Throwable t, final String format, final Object... args) {
         final LogEvent event = super.println(level, t, format, args);

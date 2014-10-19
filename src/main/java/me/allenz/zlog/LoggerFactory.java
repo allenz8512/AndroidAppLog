@@ -288,14 +288,18 @@ public class LoggerFactory {
     }
 
     public static void associateTextView(final Logger logger, final TextView textView) {
-        repository.associateTextView(logger, textView);
+        repository.addTextView(logger, textView);
+    }
+
+    public static void unassociateTextView(final Logger logger) {
+        repository.removeTextView(logger);
     }
 
     public static void printlnLogOnScreen(final LogEvent event) {
         if (appContext == null) {
             return;
         }
-        final Collection<WeakReference<TextView>> weakTextViews = repository.getAssociatedTextViews();
+        final Collection<WeakReference<TextView>> weakTextViews = repository.getTextViews();
         if (weakTextViews.isEmpty()) {
             return;
         }
@@ -309,7 +313,7 @@ public class LoggerFactory {
             }
             final String viewText = textView.getText().toString();
             int viewTextLength = viewText.length();
-            final StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder(viewText);
             while (viewTextLength + logTextLength > MAX_LOG_TEXT_LENGHT_IN_VIEW) {
                 final int index = sb.indexOf("\n");
                 sb.delete(0, index);

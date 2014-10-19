@@ -89,19 +89,23 @@ class ConfigureRepository {
         this.logWriter = logWriter;
     }
 
-    public TextView getAssociatedTextView(final Logger logger) {
+    public TextView getTextView(final Logger logger) {
         if (associatedTextViews.containsKey(logger)) {
             return associatedTextViews.get(logger).get();
         }
         return null;
     }
 
-    public Collection<WeakReference<TextView>> getAssociatedTextViews() {
+    public Collection<WeakReference<TextView>> getTextViews() {
         return associatedTextViews.values();
     }
 
-    public void associateTextView(final Logger logger, final TextView textView) {
+    public void addTextView(final Logger logger, final TextView textView) {
         associatedTextViews.put(logger, new WeakReference<TextView>(textView));
+    }
+
+    public void removeTextView(final Logger logger) {
+        associatedTextViews.remove(logger);
     }
 
     /**
