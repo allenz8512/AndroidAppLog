@@ -2,12 +2,10 @@ package me.allenz.zlog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.widget.TextView;
 
@@ -98,18 +96,8 @@ class ConfigureRepository {
         return null;
     }
 
-    public Set<TextView> getAssociatedTextViews() {
-        final Set<TextView> textViews = new HashSet<TextView>();
-        for (final Iterator<WeakReference<TextView>> iterator = associatedTextViews.values().iterator(); iterator
-            .hasNext();) {
-            final TextView textView = iterator.next().get();
-            if (textView == null) {
-                iterator.remove();
-            } else {
-                textViews.add(textView);
-            }
-        }
-        return textViews;
+    public Collection<WeakReference<TextView>> getAssociatedTextViews() {
+        return associatedTextViews.values();
     }
 
     public void associateTextView(final Logger logger, final TextView textView) {
