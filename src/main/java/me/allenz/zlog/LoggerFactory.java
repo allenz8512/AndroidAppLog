@@ -2,12 +2,9 @@ package me.allenz.zlog;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.Properties;
 
 import android.content.Context;
-import android.os.Handler;
 import android.widget.TextView;
 
 /**
@@ -27,8 +24,6 @@ public class LoggerFactory {
     private static final LogLevel DEFAULT_RELEASE_LOG_LEVEL = LogLevel.WARN;
 
     private static final String CONFIG_FILE_NAME = "zlog";
-
-    private static final int MAX_LOG_TEXT_LENGHT_IN_VIEW = 5000;
 
     private static Context appContext;
 
@@ -77,6 +72,7 @@ public class LoggerFactory {
             if (configProperties != null) {
                 parseProperties(configProperties);
             }
+            repository.setTextViewPrinter(new TextViewPrinter(appContext));
         }
     }
 
@@ -287,51 +283,30 @@ public class LoggerFactory {
         return logger;
     }
 
-    public static void associateTextView(final Logger logger, final TextView textView) {
-        repository.addTextView(logger, textView);
+    public static void bind(final TextView textView) {
+        final TextViewPrinter printer = repository.getTextViewPrinter();
+        if (printer == null) {
+            return;
+        }
+        printer.bind(textView);
     }
 
-    public static void unassociateTextView(final Logger logger) {
-        repository.removeTextView(logger);
+    public static void unbind() {
+        final TextViewPrinter printer = repository.getTextViewPrinter();
+        if (printer == null) {
+            return;
+        }
+        printer.unbind();
     }
 
     public static void printlnLogOnScreen(final LogEvent event) {
-        if (appContext == null || event == null) {
+        final TextViewPrinter printer = repository.getTextViewPrinter();
+        if (printer == null) {
             return;
         }
-        final Collection<WeakReference<TextView>> weakTextViews = repository.getTextViews();
-        if (weakTextViews.isEmpty()) {
-            return;
+        if (!printer.isStarted()) {
+            printer.start();
         }
-        final String logText = event.toString();
-        final int logTextLength = logText.length();
-        final Handler mainHandler = new Handler(appContext.getMainLooper());
-        for (final WeakReference<TextView> weakTextView: weakTextViews) {
-            final TextView textView = weakTextView.get();
-            if (textView == null) {
-                continue;
-            }
-            final String viewText = textView.getText().toString();
-            int viewTextLength = viewText.length();
-            final StringBuilder sb = new StringBuilder(viewText);
-            while (viewTextLength + logTextLength > MAX_LOG_TEXT_LENGHT_IN_VIEW) {
-                final int index = sb.indexOf("\n");
-                sb.delete(0, index);
-                viewTextLength = sb.length();
-            }
-            sb.append(logText);
-            final String newViewText = sb.toString();
-            mainHandler.post(new Runnable(){
-
-                @Override
-                public void run() {
-                    final TextView textView = weakTextView.get();
-                    if (textView != null) {
-                        textView.setText(newViewText);
-                    }
-                }
-            });
-        }
-
+        printer.print(event);
     }
 }

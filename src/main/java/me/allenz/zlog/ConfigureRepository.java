@@ -1,13 +1,9 @@
 package me.allenz.zlog;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import android.widget.TextView;
 
 /**
  * Thre repository store all configures and loggers.
@@ -44,12 +40,11 @@ class ConfigureRepository {
 
     private LogWriter logWriter;
 
-    private Map<Logger, WeakReference<TextView>> associatedTextViews;
+    private TextViewPrinter textViewPrinter;
 
     public ConfigureRepository(){
         loggerConfigs = new HashMap<String, LoggerConfig>();
         loggers = new HashMap<String, Logger>();
-        associatedTextViews = new HashMap<Logger, WeakReference<TextView>>();
         resetToDefault();
     }
 
@@ -89,23 +84,12 @@ class ConfigureRepository {
         this.logWriter = logWriter;
     }
 
-    public TextView getTextView(final Logger logger) {
-        if (associatedTextViews.containsKey(logger)) {
-            return associatedTextViews.get(logger).get();
-        }
-        return null;
+    public TextViewPrinter getTextViewPrinter() {
+        return textViewPrinter;
     }
 
-    public Collection<WeakReference<TextView>> getTextViews() {
-        return associatedTextViews.values();
-    }
-
-    public void addTextView(final Logger logger, final TextView textView) {
-        associatedTextViews.put(logger, new WeakReference<TextView>(textView));
-    }
-
-    public void removeTextView(final Logger logger) {
-        associatedTextViews.remove(logger);
+    public void setTextViewPrinter(TextViewPrinter textViewPrinter) {
+        this.textViewPrinter = textViewPrinter;
     }
 
     /**
@@ -126,7 +110,6 @@ class ConfigureRepository {
             }
         }
         loggers.clear();
-        associatedTextViews.clear();
     }
 
 }

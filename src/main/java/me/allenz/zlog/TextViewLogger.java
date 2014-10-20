@@ -11,11 +11,11 @@ public class TextViewLogger extends SimpleLogger {
     }
 
     public void associateTextView(final TextView textView) {
-        LoggerFactory.associateTextView(this, textView);
+        LoggerFactory.bind(textView);
     }
 
     public void unassociateTextView() {
-        LoggerFactory.unassociateTextView(this);
+        LoggerFactory.unbind();
     }
 
     @Override
