@@ -77,6 +77,10 @@ class TextViewPrinter {
 
     public void unbind() {
         textViewRef = null;
+        lastUpdateMillis = 0;
+        logCache = new StringBuilder();
+        logEventQueue.clear();
+
     }
 
     public void print(final LogEvent event) {
