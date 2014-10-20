@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.4.2" package="me.allenz.zlog">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.4.3" package="me.allenz.zlog">
 
     <uses-sdk android:minSdkVersion="1" android:targetSdkVersion="19"/>
 
