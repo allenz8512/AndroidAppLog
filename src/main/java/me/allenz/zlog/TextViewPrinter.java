@@ -3,9 +3,11 @@ package me.allenz.zlog;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Process;
 import android.widget.TextView;
 
 class TextViewPrinter {
@@ -52,7 +54,8 @@ class TextViewPrinter {
     }
 
     public void start() {
-        if (isStarted() || isStop()) {
+        if (isStarted() ||
+            isStop()) {
             throw new IllegalStateException("Can not restart a TextViewPrinter");
         }
         worker.start();
@@ -84,7 +87,8 @@ class TextViewPrinter {
     }
 
     public void print(final LogEvent event) {
-        if (textViewRef == null || event == null) {
+        if (textViewRef == null ||
+            event == null) {
             return;
         }
         if (!started) {
@@ -104,19 +108,25 @@ class TextViewPrinter {
 
         @Override
         public void run() {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             while (!isInterrupted()) {
                 final BlockingQueue<LogEvent> logEventQueue = TextViewPrinter.this.logEventQueue;
                 LogEvent event;
                 try {
-                    event = logEventQueue.take();
+                    event = logEventQueue.poll(MIN_PRINT_PERIOD, TimeUnit.MILLISECONDS);
                     if (textViewRef != null) {
                         final TextView textView = textViewRef.get();
                         if (textView != null) {
                             final long currentMillis = System.currentTimeMillis();
-                            final long lastUpdateMillis = TextViewPrinter.this.lastUpdateMillis;
+                            long lastUpdateMillis = TextViewPrinter.this.lastUpdateMillis;
                             final StringBuilder logCache = TextViewPrinter.this.logCache;
-                            logCache.append(event.toString());
-                            if (currentMillis - lastUpdateMillis > MIN_PRINT_PERIOD || lastUpdateMillis == 0) {
+                            if (event != null) {
+                                logCache.append(event.toString());
+                            }
+                            if ((currentMillis -
+                                 lastUpdateMillis > MIN_PRINT_PERIOD ||
+                                lastUpdateMillis == 0) &&
+                                logCache.length() > 0) {
                                 final StringBuilder logBuilder = new StringBuilder(textView.getText());
                                 logBuilder.append(logCache);
                                 while (logBuilder.length() > MAX_LOG_TEXT_LENGHT_IN_VIEW) {
@@ -134,8 +144,8 @@ class TextViewPrinter {
                                     }
 
                                 });
-                                TextViewPrinter.this.lastUpdateMillis = currentMillis;
-                                TextViewPrinter.this.logCache = new StringBuilder();
+                                lastUpdateMillis = currentMillis;
+                                logCache.delete(0, logCache.length());
                             }
                         }
                     }
