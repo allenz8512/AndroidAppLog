@@ -2,6 +2,7 @@ package me.allenz.zlog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 import android.content.Context;
@@ -89,7 +90,8 @@ public class LoggerFactory {
      */
     private static Properties locateAndLoadProperties() {
         InputStream in = null;
-        final String filename = CONFIG_FILE_NAME + ".properties";
+        final String filename = CONFIG_FILE_NAME +
+                                ".properties";
         try {
             // search assets
             in = appContext.getAssets().open(filename);
@@ -102,7 +104,8 @@ public class LoggerFactory {
             final String packageName = appContext.getPackageName();
             try {
                 final int id = Utils.intReflectStaticFieldValue(packageName
-                                                                + ".R$raw", CONFIG_FILE_NAME, -1);
+                                                                +
+                                                                ".R$raw", CONFIG_FILE_NAME, -1);
                 if (id != -1) {
                     in = appContext.getResources().openRawResource(id);
                     internalLogger.verbose("find %s.properties res/raw",
@@ -116,18 +119,21 @@ public class LoggerFactory {
 
     private static InputStream readConfiguresFromClasspath() {
         tryToloadPropertiesFromClasspath = true;
-        final String filename = CONFIG_FILE_NAME + ".properties";
+        final String filename = CONFIG_FILE_NAME +
+                                ".properties";
         LoggerFactory.class.getClassLoader();
         // search assets
         InputStream in = LoggerFactory.class.getClassLoader()
-            .getResourceAsStream("assets/" + filename);
+            .getResourceAsStream("assets/" +
+                                 filename);
         if (in != null) {
             internalLogger.verbose("find %s.properties in assets",
                 CONFIG_FILE_NAME);
         } else {
             // search res/raw
             in = LoggerFactory.class.getClassLoader().getResourceAsStream(
-                "res/raw/" + filename);
+                "res/raw/" +
+                    filename);
             if (in != null) {
                 internalLogger.verbose("find %s.properties in res/raw",
                     CONFIG_FILE_NAME);
@@ -167,10 +173,11 @@ public class LoggerFactory {
         if (appContext != null) {
             packageName = appContext.getPackageName();
         } else {
-            packageName = getPackageNameFromAndroidManifest();
+            packageName = getPackageName();
         }
         final boolean underDevelopment = Utils.booleanReflectStaticFieldValue(
-            packageName + "BuildConfig", "DEBUG", true);
+            packageName +
+                "BuildConfig", "DEBUG", true);
         if (!underDevelopment) {// if the app is released
             // shutdown internal logging
             ConfigureRepository.setInternalLogLevel(LogLevel.OFF);
@@ -180,11 +187,17 @@ public class LoggerFactory {
         }
     }
 
-    private static String getPackageNameFromAndroidManifest() {
-        // TODO Get package name from 'AndroidManifest.xml' without using
-        // ApplicationContext
-        final InputStream in = LoggerFactory.class.getClassLoader()
-            .getResourceAsStream("AndroidManifest.xml");
+    private static String getPackageName() {
+        internalLogger.verbose("try to get packageName without using Context.getPackageName()");
+        try {
+            final Class<?> activityThreadClass =
+                LoggerFactory.class.getClassLoader().loadClass("android.app.ActivityThread");
+            final Method currentPackageName = activityThreadClass.getDeclaredMethod("currentPackageName");
+            final String packageName = (String) currentPackageName.invoke(null);
+            internalLogger.verbose("package name: %s", packageName);
+            return packageName;
+        } catch (final Exception e) {
+        }
         return null;
     }
 
@@ -219,7 +232,8 @@ public class LoggerFactory {
      */
     public static Logger getLogger(final String className) {
         synchronized (LoggerFactory.class) {
-            if (!loadPropertiesSuccess && !tryToloadPropertiesFromClasspath) {
+            if (!loadPropertiesSuccess &&
+                !tryToloadPropertiesFromClasspath) {
                 // try to load configures if have not call init() method first
                 checkEnvironmentAndSetup(DEFAULT_RELEASE_LOG_LEVEL);
                 final Properties configProperties = loadProperties(readConfiguresFromClasspath());
