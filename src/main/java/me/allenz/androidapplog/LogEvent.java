@@ -1,9 +1,9 @@
-package me.allenz.zlog;
+package me.allenz.androidapplog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class LogEvent {
+public class LogEvent {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss.SSS");
@@ -27,6 +27,22 @@ class LogEvent {
         this.level = level;
         this.tag = tag;
         this.message = message;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public LogLevel getLevel() {
+        return level;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     @Override

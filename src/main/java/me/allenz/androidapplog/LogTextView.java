@@ -1,4 +1,4 @@
-package me.allenz.zlog;
+package me.allenz.androidapplog;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -46,7 +46,6 @@ public class LogTextView extends TextView {
 
             @Override
             public void afterTextChanged(final Editable s) {
-                // try to auto scrolling the textview
                 final int scrollAmount =
                     getLayout().getLineTop(getLineCount()) -
                         getHeight();

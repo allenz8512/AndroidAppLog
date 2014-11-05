@@ -1,64 +1,48 @@
-A lightweighted logger for android app
+Android App Log
 ======================================
+A lightweight android logger support auto tag, file logging and show logs on screen
 ####Usage:
-Put zlog.properties into 'assets' or 'res/raw' under your app's root directory, format:
+Put aal.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
-	debug=[Show zlog debug log:True|False]
-	file=[Output to file:True|False],[Internal|External|Custom file path]
+	debug=[Show debug log:True|False]
 	root=[Log level],[Log tag],[Show thread name in tag:True|False]
+	logcat=[Output to logcat:True|False]
+	file=[Output to file:True|False],[parent folder of log files],[rolling file size]
+	textview=[Output to textview:True|False]
 	logger.[Package or class fullname]=[Log level],[Log tag],[Show thread name in tag:True|False]
 
 Value of 'Log level' can be one of following:
 
 	VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, OFF
 
-Initialize zlog in your Application class:
-
-	LoggerFactory.init(getApplicationContext());
-
-Now use loggers just like using slf4j!
+Now use loggers just like log4j!
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger();
 	
 	LOGGER.debug("Message");
-	LOGGER.info("Message with arguments: %s %s", "arg1", "arg2");
+	LOGGER.info("Message with arguments: %s %d", "str", 123);
 	LOGGER.warn(new Throwable());
 	LOGGER.error(new Throwable(), "Throwable with a message");
 
 ####Example:
 
 
-zlog.properties
+aal.properties
 
 	debug=false  
-	file=true,internal  
 	root=debug  
+	#use ${internal} or ${external} to be prefix of folder path, means using internal or external storage of app  
+	file=true,${internal}/logs  
+	textview=true  
 	logger.com.example.app.MainActivity=info,Activity,true
 	logger.com.example.app=warn
-
-App.java
-
-	package com.example.app;
-	
-	import me.allenz.zlog.LoggerFactory;
-	import android.app.Application;
-	
-	public class App extends Application {
-	
-		@Override
-		public void onCreate() {
-			LoggerFactory.init(this); // must be initialize in your custom Application
-			super.onCreate();
-		}
-	
-	}
 
 A.java
 
 	package com.example.app;
 	
-	import me.allenz.zlog.Logger;
-	import me.allenz.zlog.LoggerFactory;
+	import me.allenz.androidapplog.Logger;
+	import me.allenz.androidapplog.LoggerFactory;
 	
 	public class A {
 	
@@ -76,8 +60,8 @@ B.java
 
 	package com.example;
 	
-	import me.allenz.zlog.Logger;
-	import me.allenz.zlog.LoggerFactory;
+	import me.allenz.androidapplog.Logger;
+	import me.allenz.androidapplog.LoggerFactory;
 	
 	public class B {
 	
@@ -95,8 +79,8 @@ MainActivity.java
 
 	package com.example.app;
 	
-	import me.allenz.zlog.Logger;
-	import me.allenz.zlog.LoggerFactory;
+	import me.allenz.androidapplog.Logger;
+	import me.allenz.androidapplog.LoggerFactory;
 	import android.app.Activity;
 	import android.os.Bundle;
 	
@@ -105,11 +89,15 @@ MainActivity.java
 	public class MainActivity extends Activity {
 	
 		private static final Logger logger = LoggerFactory.getLogger();
+		
+		private TextView logView;
 	
 		@Override
 		protected void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_main);
+			//create an intouchable and transparent textview to show logs on screen
+			logView = LoggerFactory.createLogTextView(this);
 			logger.verbose("verbose");
 			logger.debug("debug");
 			logger.info("info");
@@ -117,10 +105,22 @@ MainActivity.java
 			new A();
 			new B();
 		}
+		
+		@Override
+    	protected void onResume() {
+        	super.onResume();
+        	LoggerFactory.bindTextView(logView);
+    	}
+
+    	@Override
+    	protected void onPause() {
+        	super.onPause();
+        	LoggerFactory.unbindTextView();
+    	}
 	
 	}
 
-Log output in '/data/data/com.example.app/files/zlog.log':
+Log output in '/data/data/com.example.app/files/logs/com.example.app.log':
 
 >2014-08-26 12:05:50.269	INFO	[main]Activity	info  
 >2014-08-26 12:05:50.269	WARN	[main]Activity	warn  

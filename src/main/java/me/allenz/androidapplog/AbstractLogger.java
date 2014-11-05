@@ -1,77 +1,61 @@
-package me.allenz.zlog;
+package me.allenz.androidapplog;
 
 import android.util.Log;
 
-/**
- * A Simple implementation for Logger that prints all messages to Logcat.
- * 
- * @author Allenz
- * @since 0.1.0-RELEASE
- * @see me.allenz.zlog.Logger
- * @see android.util.Log
- */
-class SimpleLogger extends LoggerConfig implements Logger {
+public abstract class AbstractLogger implements Logger {
 
-    private LogWriter logWriter;
+    protected String name;
 
-    /**
-     * Create a new SimpleLogger instance.
-     * 
-     * @param name class fullname of logger user
-     * @param level the LogLevel of the logger
-     * @param tag the tag of the logger
-     * @param thread if true, shows thread name as a prefix of the tag
-     * @param logWriter the writer for output log to file
-     * @since 0.3.0-RELEASE
-     */
-    public SimpleLogger(final String name, final String tag,
-                        final LogLevel level, final boolean thread,
-                        final LogWriter logWriter){
-        super(name, tag, level, thread);
-        this.logWriter = logWriter;
+    protected LogLevel level;
+
+    protected String tag;
+
+    protected boolean showThreadName;
+
+    public AbstractLogger(final String name){
+        this(name, Configure.DEFAULT_ROOT_LOG_LEVEL, null, false);
     }
 
-    /**
-     * Internal method that prints log message.
-     * 
-     * @param level the LogLevel of the log message
-     * @param t a throwable(exception) object, can be {@code null}
-     * @param format a format string of the log message, can be {@code null}.
-     * @param args an array of arguments, can be {@code null}
-     * @return wrapper of the log
-     * @since 0.1.0-RELEASE
-     */
-    protected LogEvent println(final LogLevel level, final Throwable t,
-                               final String format, final Object... args) {
-        if (this.level.includes(level) && (t != null || format != null)) {
-            String message = null;
-            if (format != null && format.length() > 0) {
-                message = (args != null && args.length > 0)? String.format(
-                    format, args): format;
-            }
-            if (t != null) {
-                message = message != null? message + "\n"
-                                           + Log.getStackTraceString(t): Log
-                    .getStackTraceString(t);
-            }
-            String tag;
-            if (thread) {// shows current thread name in tag
-                final StringBuilder sb = new StringBuilder();
-                sb.append("[").append(Thread.currentThread().getName())
-                    .append("]").append(this.tag);
-                tag = sb.toString();
-            } else {
-                tag = this.tag;
-            }
-            Log.println(level.intValue(), tag, message);
-            final LogEvent event = new LogEvent(level, tag, message);
-            // try to write log on disk
-            if (logWriter != null && logWriter.isStarted()) {
-                logWriter.write(event);
-            }
-            return event;
-        }
-        return null;
+    public AbstractLogger(final String name, final LogLevel level, final String tag, final boolean showThreadName){
+        this.name = name;
+        this.level = level;
+        this.tag = tag;
+        this.showThreadName = showThreadName;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public LogLevel getLogLevel() {
+        return level;
+    }
+
+    @Override
+    public void setLogLevel(final LogLevel level) {
+        this.level = level;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
+    }
+
+    @Override
+    public void setTag(final String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public boolean isShowThreadName() {
+        return showThreadName;
+    }
+
+    @Override
+    public void setShowThreadName(final boolean show) {
+        showThreadName = show;
     }
 
     @Override
@@ -101,6 +85,11 @@ class SimpleLogger extends LoggerConfig implements Logger {
     }
 
     @Override
+    public void verbose(final Object obj) {
+        println(LogLevel.VERBOSE, null, obj.toString());
+    }
+
+    @Override
     public void debug(final String format, final Object... args) {
         println(LogLevel.DEBUG, null, format, args);
     }
@@ -124,6 +113,11 @@ class SimpleLogger extends LoggerConfig implements Logger {
     @Override
     public void debug(final Throwable t, final String message) {
         println(LogLevel.DEBUG, t, message);
+    }
+
+    @Override
+    public void debug(final Object obj) {
+        println(LogLevel.DEBUG, null, obj.toString());
     }
 
     @Override
@@ -153,6 +147,11 @@ class SimpleLogger extends LoggerConfig implements Logger {
     }
 
     @Override
+    public void info(final Object obj) {
+        println(LogLevel.INFO, null, obj.toString());
+    }
+
+    @Override
     public void warn(final String format, final Object... args) {
         println(LogLevel.WARN, null, format, args);
     }
@@ -176,6 +175,11 @@ class SimpleLogger extends LoggerConfig implements Logger {
     @Override
     public void warn(final Throwable t, final String message) {
         println(LogLevel.WARN, t, message);
+    }
+
+    @Override
+    public void warn(final Object obj) {
+        println(LogLevel.WARN, null, obj.toString());
     }
 
     @Override
@@ -205,6 +209,11 @@ class SimpleLogger extends LoggerConfig implements Logger {
     }
 
     @Override
+    public void error(final Object obj) {
+        println(LogLevel.ERROR, null, obj.toString());
+    }
+
+    @Override
     public void wtf(final String format, final Object... args) {
         println(LogLevel.ASSERT, null, format, args);
     }
@@ -228,6 +237,46 @@ class SimpleLogger extends LoggerConfig implements Logger {
     @Override
     public void wtf(final Throwable t, final String message) {
         println(LogLevel.ASSERT, t, message);
+    }
+
+    @Override
+    public void wtf(final Object obj) {
+        println(LogLevel.ASSERT, null, obj.toString());
+    }
+
+    protected LogEvent buidLogEvent(final LogLevel level, final Throwable t,
+                                    final String format, final Object... args) {
+        String message = null;
+        if (format != null &&
+            format.length() > 0) {
+            message = (args != null && args.length > 0)? String.format(
+                format, args): format;
+        }
+        if (t != null) {
+            message = message != null? message +
+                                       "\n"
+                                       + Log.getStackTraceString(t): Log
+                .getStackTraceString(t);
+        }
+        String tag;
+        if (showThreadName) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("[").append(Thread.currentThread().getName())
+                .append("]").append(this.tag);
+            tag = sb.toString();
+        } else {
+            tag = this.tag;
+        }
+        return new LogEvent(level, tag, message);
+    }
+
+    protected abstract void println(final LogLevel level, final Throwable t,
+                                    final String format, final Object... args);
+
+    @Override
+    public String toString() {
+        return "Logger [name=" +
+               name + ", level=" + level + ", tag=" + tag + ", showThreadName=" + showThreadName + "]";
     }
 
 }
