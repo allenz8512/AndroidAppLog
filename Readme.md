@@ -1,9 +1,9 @@
 Android App Log
 ======================================
 A lightweight android logger support auto tag, file logging and show logs on screen  
-![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot2.png)
-![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot1.png)
-![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)
+![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot2.png)  
+![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot1.png)  
+![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)  
 ####Usage:
 Put aal.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
