@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.allenz</groupId>
 	<artifactId>android-app-log</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>aar</packaging>
 	<name>Android App Log</name>
 
