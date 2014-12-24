@@ -2,6 +2,7 @@ package me.allenz.androidapplog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
@@ -23,6 +24,8 @@ public class LoggerFactory {
 	private static Context appContext;
 
 	private static String packageName;
+
+	private static UncaughtExceptionLogger mUncaughtExceptionLogger;
 
 	static {
 		getContext();
@@ -233,5 +236,26 @@ public class LoggerFactory {
 		root.addView(textView);
 		root.bringChildToFront(textView);
 		return textView;
+	}
+
+	public static void enableLoggingUncaughtException(
+			final UncaughtExceptionHandler customHandler) {
+		if (mUncaughtExceptionLogger == null) {
+			if (customHandler != null) {
+				mUncaughtExceptionLogger = new UncaughtExceptionLogger(
+						customHandler);
+			} else {
+				mUncaughtExceptionLogger = new UncaughtExceptionLogger();
+			}
+			Thread.setDefaultUncaughtExceptionHandler(mUncaughtExceptionLogger);
+		}
+	}
+
+	public static void disableLoggingUncaughtException() {
+		if (mUncaughtExceptionLogger != null) {
+			final UncaughtExceptionHandler customHandler = mUncaughtExceptionLogger
+					.getDefaultExceptionHandler();
+			Thread.setDefaultUncaughtExceptionHandler(customHandler);
+		}
 	}
 }

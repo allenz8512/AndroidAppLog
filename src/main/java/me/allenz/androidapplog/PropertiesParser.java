@@ -19,6 +19,8 @@ public class PropertiesParser {
 
 	private static final String ROOT_KEY = "root";
 
+	private static final String HANDLE_EXCEPTION_KEY = "handleex";
+
 	private static final String LOGCAT_KEY = "logcat";
 
 	private static final String FILE_KEY = "file";
@@ -51,6 +53,7 @@ public class PropertiesParser {
 		parseDebug(configure);
 		parseRoot(configure);
 		parseLoggers(configure);
+		parseHandleEx(configure);
 		parseLogCat(configure);
 		parseFile(configure);
 		parseTextView(configure);
@@ -159,6 +162,23 @@ public class PropertiesParser {
 
 	private String tagValueOf(final String name, final String str) {
 		return TextUtils.isEmpty(str) ? null : str;
+	}
+
+	private void parseHandleEx(final Configure configure) {
+		final String value = (String) properties.get(HANDLE_EXCEPTION_KEY);
+		if (TextUtils.isEmpty(value)) {
+			return;
+		}
+		final Boolean handleException = booleanValueOf(value.trim());
+		if (handleException == true) {
+			configure.setHandleException(true);
+			internalLogger
+			.verbose("properties: enable logging uncaught exception");
+		} else if (handleException == false) {
+			configure.setHandleException(false);
+			internalLogger
+			.verbose("properties: disable logging uncaught exception");
+		}
 	}
 
 	private void parseLogCat(final Configure configure) {
