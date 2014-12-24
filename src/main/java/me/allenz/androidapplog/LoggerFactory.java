@@ -240,15 +240,13 @@ public class LoggerFactory {
 
 	public static void enableLoggingUncaughtException(
 			final UncaughtExceptionHandler customHandler) {
-		if (mUncaughtExceptionLogger == null) {
-			if (customHandler != null) {
-				mUncaughtExceptionLogger = new UncaughtExceptionLogger(
-						customHandler);
-			} else {
-				mUncaughtExceptionLogger = new UncaughtExceptionLogger();
-			}
-			Thread.setDefaultUncaughtExceptionHandler(mUncaughtExceptionLogger);
+		if (customHandler != null) {
+			mUncaughtExceptionLogger = new UncaughtExceptionLogger(
+					customHandler);
+		} else {
+			mUncaughtExceptionLogger = new UncaughtExceptionLogger();
 		}
+		Thread.setDefaultUncaughtExceptionHandler(mUncaughtExceptionLogger);
 	}
 
 	public static void disableLoggingUncaughtException() {
