@@ -20,7 +20,8 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 	public void uncaughtException(final Thread thread, final Throwable ex) {
 		final Logger logger = LoggerFactory.getLogger(ex.getStackTrace()[0]
 				.getClassName());
-		logger.error(ex);
+		logger.error(ex, "Uncaught exception in thread [%s] :",
+				thread.getName());
 		if (mDefaultExceptionHandler != null) {
 			mDefaultExceptionHandler.uncaughtException(thread, ex);
 		}
