@@ -26,4 +26,8 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 		}
 	}
 
+	public UncaughtExceptionHandler getDefaultExceptionHandler() {
+		return mDefaultExceptionHandler;
+	}
+
 }
