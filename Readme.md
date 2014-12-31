@@ -4,9 +4,17 @@ A lightweight android logger support auto tag, file logging and show logs on scr
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot2.png)  
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot1.png)  
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)  
-####Binary download：  
-[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](http://dl.bintray.com/allenz8512/maven/me/allenz/android-app-log/1.0.1/android-app-log-1.0.1.jar)  
-####Usage:
+####Build：  
+Binary download:  
+[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://bintray.com/artifact/download/allenz8512/maven/me/allenz/android-app-log/1.1.1/android-app-log-1.1.1.jar)  
+Gradle build (jcenter):  
+
+    dependencies{
+    	compile 'me.allenz:android-app-log:1.1.1@jar'
+    }	
+
+Will be synchronize to maven central soon!  
+####How to use:
 Put aal.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
 	debug=[Show debug log:True|False]
@@ -14,6 +22,7 @@ Put aal.properties into 'assets' or 'res/raw' under your app's root directory, f
 	logcat=[Output to logcat:True|False]
 	file=[Output to file:True|False],[parent folder of log files],[rolling file size]
 	textview=[Output to textview:True|False]
+	handleex=[Log uncaught exception message:True|False]
 	logger.[Package or class fullname]=[Log level],[Log tag],[Show thread name in tag:True|False]
 
 Value of 'Log level' can be one of following:
