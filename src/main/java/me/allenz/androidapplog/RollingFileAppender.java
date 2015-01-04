@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class RollingFileAppender extends AsyncAppender {
 
+	private static final byte[] LINE_BREAK_BYTES = "\n".getBytes();
+
 	private File logDir;
 
 	private String packageName;
@@ -120,6 +122,7 @@ public class RollingFileAppender extends AsyncAppender {
 				out = createOrOpenLogFile(logFile);
 			}
 			out.write(logBytes);
+			out.write(LINE_BREAK_BYTES);
 			out.flush();
 			out.getFD().sync();
 		} catch (final IOException e) {
