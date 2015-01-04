@@ -14,53 +14,64 @@ import android.widget.TextView;
 
 public class LogTextView extends TextView {
 
-    public LogTextView(final Context context){
-        super(context);
-        setAttributes();
-    }
+	public LogTextView(final Context context) {
+		super(context);
+		setDefaultAttributes();
+		setAutoScrolling();
+	}
 
-    public LogTextView(final Context context, final AttributeSet attrs){
-        super(context, attrs);
-    }
+	public LogTextView(final Context context, final AttributeSet attrs) {
+		super(context, attrs);
+		setAutoScrolling();
+	}
 
-    public LogTextView(final Context context, final AttributeSet attrs, final int defStyle){
-        super(context, attrs, defStyle);
-    }
+	public LogTextView(final Context context, final AttributeSet attrs,
+			final int defStyle) {
+		super(context, attrs, defStyle);
+		setAutoScrolling();
+	}
 
-    private void setAttributes() {
-        setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        setTextColor(Color.parseColor("#66000000"));
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
-        setGravity(Gravity.BOTTOM);
-        setSingleLine(false);
-        setBackgroundColor(Color.parseColor("#66ffffff"));
-        setKeyListener(null);
-        setMovementMethod(ScrollingMovementMethod.getInstance());
-        addTextChangedListener(new TextWatcher(){
+	private void setDefaultAttributes() {
+		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT));
+		setTextColor(Color.parseColor("#66000000"));
+		setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+		setBackgroundColor(Color.parseColor("#66ffffff"));
+	}
 
-            @Override
-            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {}
+	private void setAutoScrolling() {
+		setGravity(Gravity.BOTTOM);
+		setSingleLine(false);
+		setKeyListener(null);
+		setMovementMethod(ScrollingMovementMethod.getInstance());
+		addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {}
+			@Override
+			public void onTextChanged(final CharSequence s, final int start,
+					final int before, final int count) {
+			}
 
-            @Override
-            public void afterTextChanged(final Editable s) {
-                final int scrollAmount =
-                    getLayout().getLineTop(getLineCount()) -
-                        getHeight();
-                if (scrollAmount > 0) {
-                    scrollTo(0, scrollAmount);
-                } else {
-                    scrollTo(0, 0);
-                }
-            }
-        });
-    }
+			@Override
+			public void beforeTextChanged(final CharSequence s,
+					final int start, final int count, final int after) {
+			}
 
-    @Override
-    public boolean dispatchTouchEvent(final MotionEvent event) {
-        return false;
-    }
+			@Override
+			public void afterTextChanged(final Editable s) {
+				final int scrollAmount = getLayout().getLineTop(getLineCount())
+						- getHeight();
+				if (scrollAmount > 0) {
+					scrollTo(0, scrollAmount);
+				} else {
+					scrollTo(0, 0);
+				}
+			}
+		});
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(final MotionEvent event) {
+		return false;
+	}
 
 }
