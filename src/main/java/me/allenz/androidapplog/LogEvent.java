@@ -1,8 +1,7 @@
 package me.allenz.androidapplog;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import android.text.format.DateFormat;
 
 public class LogEvent {
 
@@ -46,8 +45,9 @@ public class LogEvent {
 
 	@Override
 	public String toString() {
+		final SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 		final StringBuilder sb = new StringBuilder();
-		sb.append(DateFormat.format(DATE_FORMAT, new Date(time))).append("\t");
+		sb.append(formatter.format(new Date(time))).append("\t");
 		sb.append(level.toString()).append("\t");
 		sb.append(tag).append("\t");
 		sb.append(message).append("\n");
