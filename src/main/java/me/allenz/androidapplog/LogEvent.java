@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class LogEvent {
 
+	private static final String DELIMITER = "    ";
+
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	private long time;
@@ -47,10 +49,10 @@ public class LogEvent {
 	public String toString() {
 		final SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 		final StringBuilder sb = new StringBuilder();
-		sb.append(formatter.format(new Date(time))).append("\t");
-		sb.append(level.toString()).append("\t");
-		sb.append(tag).append("\t");
-		sb.append(message).append("\n");
+		sb.append(formatter.format(new Date(time))).append(DELIMITER);
+		sb.append(level.toString()).append(DELIMITER);
+		sb.append(tag).append(DELIMITER);
+		sb.append(message);
 		return sb.toString();
 	}
 }
