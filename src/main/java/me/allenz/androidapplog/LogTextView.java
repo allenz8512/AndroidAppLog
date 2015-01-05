@@ -34,9 +34,8 @@ public class LogTextView extends TextView {
 	private void setDefaultAttributes() {
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT));
-		setTextColor(Color.parseColor("#66000000"));
 		setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
-		setBackgroundColor(Color.parseColor("#66ffffff"));
+		setBackgroundColor(Color.parseColor("#00ffffff"));
 	}
 
 	private void setAutoScrolling() {
