@@ -18,13 +18,17 @@ public class RollingFileAppender extends AsyncAppender {
 
 	private long rollSize;
 
+	private boolean useGZip;
+
 	private File logFile;
 
 	private FileOutputStream out;
 
-	public RollingFileAppender(final File logDir, final long rollSize) {
+	public RollingFileAppender(final File logDir, final long rollSize,
+			final boolean useGZip) {
 		this.logDir = logDir;
 		this.rollSize = rollSize;
+		this.useGZip = useGZip;
 		packageName = LoggerFactory.getPackageName();
 	}
 
@@ -116,7 +120,9 @@ public class RollingFileAppender extends AsyncAppender {
 			final long logFileSize = out.getChannel().size();
 			if (logFileSize + logBytes.length > rollSize) {
 				out.close();
-				Runtime.getRuntime().exec("gzip " + logFile.getPath());
+				if (useGZip) {
+					Runtime.getRuntime().exec("gzip " + logFile.getPath());
+				}
 				rolling++;
 				logFile = getLogFile(rolling);
 				out = createOrOpenLogFile(logFile);

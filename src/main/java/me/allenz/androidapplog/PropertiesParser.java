@@ -86,7 +86,7 @@ public class PropertiesParser {
 			configure.setRootTag(loggerConfig.getTag());
 			configure.setRootShowThread(loggerConfig.isShowThreadName());
 			internalLogger
-					.verbose("properties: logger root : %s", loggerConfig);
+			.verbose("properties: logger root : %s", loggerConfig);
 		} else {
 			internalLogger.verbose("properties: parse logger root failed : %s",
 					value);
@@ -123,9 +123,9 @@ public class PropertiesParser {
 					}
 				} else {
 					internalLogger
-							.verbose(
-									"properties: name '%s' is illegal, it should be package or class fullname",
-									name);
+					.verbose(
+							"properties: name '%s' is illegal, it should be package or class fullname",
+							name);
 				}
 			}
 		}
@@ -217,16 +217,18 @@ public class PropertiesParser {
 			return;
 		}
 		final Matcher matcher = FILE_VALUE_PATTERN.matcher(value.trim());
-		boolean use = false;
+		Boolean use = null;
 		File dir = null;
 		Long size = null;
+		Boolean useGZip = null;
 		if (matcher.matches()) {
-			use = Boolean.valueOf(matcher.group(1));
+			use = booleanValueOf(matcher.group(1));
 			dir = logDirValueOf(matcher.group(3));
 			try {
 				size = Long.valueOf(matcher.group(5));
 			} catch (final NumberFormatException e) {
 			}
+			useGZip = booleanValueOf(matcher.group(7));
 		}
 		if (use == true) {
 			configure.setUseFileAppender(true);
@@ -235,6 +237,9 @@ public class PropertiesParser {
 			}
 			if (size != null) {
 				configure.setLogFileRollingSize(size);
+			}
+			if (useGZip != null) {
+				configure.setCompressLogFiles(useGZip);
 			}
 			internalLogger.verbose("properties: enable rolling file appender");
 		} else {
@@ -251,12 +256,12 @@ public class PropertiesParser {
 		} else if (str.startsWith(FILE_INTERNAL)) {
 			dir = new File("/data/data/" + LoggerFactory.getPackageName()
 					+ "/files", str.substring(FILE_INTERNAL.length(),
-					str.length()));
+							str.length()));
 		} else if (str.startsWith(FILE_EXTERNAL)) {
 			if (!Environment.getExternalStorageState().equals(
 					Environment.MEDIA_MOUNTED)) {
 				internalLogger
-						.verbose("properties: external sdcard not mounted, use default log file path");
+				.verbose("properties: external sdcard not mounted, use default log file path");
 				dir = new File("/data/data/" + LoggerFactory.getPackageName()
 						+ "/files");
 			} else {

@@ -32,6 +32,8 @@ public class Configure {
 
 	private long logFileRollingSize = DEFAULT_LOG_FILE_ROLLING_SIZE;
 
+	private boolean compressLogFiles = true;
+
 	private boolean useTextViewAppender = false;
 
 	public Configure() {
@@ -110,6 +112,14 @@ public class Configure {
 		this.logFileRollingSize = logFileRollingSize;
 	}
 
+	public boolean isCompressLogFiles() {
+		return compressLogFiles;
+	}
+
+	public void setCompressLogFiles(final boolean compressLogFiles) {
+		this.compressLogFiles = compressLogFiles;
+	}
+
 	public boolean isUseTextViewAppender() {
 		return useTextViewAppender;
 	}
@@ -157,7 +167,7 @@ public class Configure {
 		}
 		if (useFileAppender) {
 			repository.addAppender(new RollingFileAppender(logFileDir,
-					logFileRollingSize));
+					logFileRollingSize, compressLogFiles));
 		}
 		if (useTextViewAppender) {
 			repository.addAppender(new TextViewAppender());
