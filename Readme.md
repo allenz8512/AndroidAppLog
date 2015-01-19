@@ -6,11 +6,11 @@ A lightweight android logger support auto tag, file logging and show logs on scr
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)  
 ####Build：  
 Binary download:  
-[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://bintray.com/artifact/download/allenz8512/maven/me/allenz/android-app-log/1.1.1/android-app-log-1.1.1.jar)  
+[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://bintray.com/artifact/download/allenz8512/maven/me/allenz/android-app-log/1.2.0/android-app-log-1.2.0.jar
 Gradle build (jcenter):  
 
     dependencies{
-    	compile 'me.allenz:android-app-log:1.1.1@jar'
+    	compile 'me.allenz:android-app-log:1.2.0@jar'
     }	
 
 Will be synchronize to maven central soon!  
@@ -20,7 +20,7 @@ Put aal.properties into 'assets' or 'res/raw' under your app's root directory, f
 	debug=[Show debug log:True|False]
 	root=[Log level],[Log tag],[Show thread name in tag:True|False]
 	logcat=[Output to logcat:True|False]
-	file=[Output to file:True|False],[parent folder of log files],[rolling file size]
+	file=[Output to file:True|False],[parent folder of log files],[rolling file size],[enable gzip compress:true|false]
 	textview=[Output to textview:True|False]
 	handleex=[Log uncaught exception message:True|False]
 	logger.[Package or class fullname]=[Log level],[Log tag],[Show thread name in tag:True|False]
