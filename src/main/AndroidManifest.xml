@@ -1,6 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5" android:versionName="1.2.0" package="me.allenz.androidapplog">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="6" android:versionName="1.3.0" package="me.allenz.androidapplog">
 
-    <uses-sdk android:minSdkVersion="1" android:targetSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="22"/>
 
 
 </manifest>
