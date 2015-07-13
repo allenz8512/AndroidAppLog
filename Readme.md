@@ -6,11 +6,11 @@ A lightweight android logger support auto tag, file logging and show logs on scr
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)  
 ####Build：  
 Binary download:  
-[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://bintray.com/artifact/download/allenz8512/maven/me/allenz/android-app-log/1.2.0/android-app-log-1.2.0.jar)  
+[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://github.com/allenz8512/AndroidAppLog/releases/download/1.3.0/android-app-log-1.3.0.jar)  
 Gradle build (jcenter):  
 
     dependencies{
-    	compile 'me.allenz:android-app-log:1.2.0@jar'
+    	compile 'me.allenz:android-app-log:1.3.0@jar'
     }	
 
 Will be synchronize to maven central soon!  
