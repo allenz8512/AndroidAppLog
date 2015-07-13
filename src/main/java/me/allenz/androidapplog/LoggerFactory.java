@@ -100,7 +100,7 @@ public class LoggerFactory {
 	private static void checkBuildConfigAndApplyConfigure() {
 		final boolean underDevelopment = ReflectUtils
 				.booleanReflectStaticFieldValue(packageName + ".BuildConfig",
-						"DEBUG", true);
+						"DEBUG", false);
 		if (underDevelopment) {
 			repository.setConfigure(Configure.defaultConfigure());
 		} else {
