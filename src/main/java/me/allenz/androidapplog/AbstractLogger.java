@@ -253,7 +253,7 @@ public abstract class AbstractLogger implements Logger {
 		println(LogLevel.ASSERT, null, message);
 	}
 
-	protected LogEvent buidLogEvent(final LogLevel level, final Throwable t,
+	protected LogEvent buildLogEvent(final LogLevel level, final Throwable t,
 			final String format, final Object... args) {
 		String message = null;
 		if (format != null && format.length() > 0) {
