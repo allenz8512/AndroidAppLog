@@ -3,18 +3,22 @@ Android App Log
 A lightweight android logger support auto tag, file logging and show logs on screen  
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot2.png)  
 ![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot1.png)  
-![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)  
+![image](https://github.com/allenz8512/androidapplog/blob/master/screenshots/screenshot3.png)
+
+####New in 1.4.0:
+Use LoggerFactoryConfig.setPropertiesEncoding(encoding) to set the encoding for your aal.properties, 'ISO-8859-1' by default.
 ####Build：  
 Binary download:  
 [![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://github.com/allenz8512/AndroidAppLog/releases/download/1.3.0/android-app-log-1.3.0.jar)  
 Gradle build (jcenter):  
 
     dependencies{
-    	compile 'me.allenz:android-app-log:1.3.0@jar'
+    	compile 'me.allenz:android-app-log:1.4.0@jar'
     }	
 
-Will be synchronize to maven central soon!  
+Will be synchronize to maven central soon!
 ####How to use:
+
 Put aal.properties into 'assets' or 'res/raw' under your app's root directory, format:
 
 	debug=[Show debug log:True|False]
