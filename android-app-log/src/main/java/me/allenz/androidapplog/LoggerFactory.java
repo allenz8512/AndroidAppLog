@@ -71,16 +71,14 @@ public class LoggerFactory {
 
 	static String getPackageName() {
 		if (packageName == null) {
-			try {
-				final Class<?> activityThreadClass = LoggerFactory.class
-						.getClassLoader().loadClass(
-								"android.app.ActivityThread");
-				final Method currentPackageName = activityThreadClass
-						.getDeclaredMethod("currentPackageName");
-				packageName = (String) currentPackageName.invoke(null);
-			} catch (final Exception e) {
-				if (appContext != null) {
-					packageName = appContext.getPackageName();
+			if (appContext != null) {
+				packageName = appContext.getPackageName();
+			} else {
+				try {
+					final Class<?> activityThreadClass = LoggerFactory.class.getClassLoader().loadClass("android.app.ActivityThread");
+					final Method currentPackageName = activityThreadClass.getDeclaredMethod("currentPackageName");
+					packageName = (String) currentPackageName.invoke(null);
+				} catch (final Exception e) {
 				}
 			}
 		}
