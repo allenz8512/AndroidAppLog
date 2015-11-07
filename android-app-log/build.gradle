@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 4
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.3.0"
+        versionCode 7
+        versionName "1.4.0"
     }
     buildTypes {
         release {
@@ -20,7 +20,7 @@ android {
 }
 
 group = 'me.allenz'
-version = '1.3.0'
+version = android.defaultConfig.versionName
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs

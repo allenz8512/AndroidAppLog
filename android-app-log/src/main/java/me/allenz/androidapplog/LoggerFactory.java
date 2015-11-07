@@ -3,11 +3,13 @@ package me.allenz.androidapplog;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -99,8 +101,7 @@ public class LoggerFactory {
 
 	private static void checkBuildConfigAndApplyConfigure() {
 		final boolean underDevelopment = ReflectUtils
-				.booleanReflectStaticFieldValue(packageName + ".BuildConfig",
-						"DEBUG", false);
+				.booleanReflectStaticFieldValue(packageName + ".BuildConfig", "DEBUG", false);
 		if (underDevelopment) {
 			repository.setConfigure(Configure.defaultConfigure());
 		} else {
@@ -135,7 +136,11 @@ public class LoggerFactory {
 		}
 		final Properties properties = new Properties();
 		try {
-			properties.load(in);
+			if (Build.VERSION.SDK_INT < 11) {
+				properties.load(in);
+			} else {
+				properties.load(new InputStreamReader(in, LoggerFactoryConfig.mPropertiesEncoding));
+			}
 		} catch (final IOException e) {
 			return null;
 		} finally {
