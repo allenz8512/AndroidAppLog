@@ -9,11 +9,11 @@ A lightweight android logger support auto tag, file logging and show logs on scr
 Use LoggerFactoryConfig.setPropertiesEncoding(encoding) to set the encoding for your aal.properties, 'ISO-8859-1' by default.
 ####Build：  
 Binary download:  
-[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://github.com/allenz8512/AndroidAppLog/releases/download/1.3.0/android-app-log-1.3.0.jar)  
+[![Download](https://api.bintray.com/packages/allenz8512/maven/android-app-log/images/download.svg) ](https://github.com/allenz8512/AndroidAppLog/releases/download/1.4.0/android-app-log-1.4.0.aar)  
 Gradle build (jcenter):  
 
     dependencies{
-    	compile 'me.allenz:android-app-log:1.4.0@jar'
+    	compile 'me.allenz:android-app-log:1.4.0'
     }	
 
 Will be synchronize to maven central soon!
