@@ -97,10 +97,19 @@ public class LoggerFactory {
 		repository.setConfigure(configure);
 	}
 
+	private static boolean isUnderJavaEnvironment(){
+		try {
+			Class.forName("java.applet.Applet");
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
+	}
+
 	private static void checkBuildConfigAndApplyConfigure() {
 		final boolean underDevelopment = ReflectUtils
 				.booleanReflectStaticFieldValue(packageName + ".BuildConfig", "DEBUG", false);
-		if (underDevelopment) {
+		if (isUnderJavaEnvironment() || underDevelopment || LoggerFactoryConfig.forceDebug) {
 			repository.setConfigure(Configure.defaultConfigure());
 		} else {
 			repository.setConfigure(Configure.releaseConfigure());
@@ -137,7 +146,7 @@ public class LoggerFactory {
 			if (Build.VERSION.SDK_INT < 11) {
 				properties.load(in);
 			} else {
-				properties.load(new InputStreamReader(in, LoggerFactoryConfig.mPropertiesEncoding));
+				properties.load(new InputStreamReader(in, LoggerFactoryConfig.propertiesEncoding));
 			}
 		} catch (final IOException e) {
 			return null;
